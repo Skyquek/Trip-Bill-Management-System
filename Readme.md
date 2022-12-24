@@ -1,7 +1,7 @@
 ## Creating a project
 
 ```python
-django-admin startproject mysite
+$ django-admin startproject mysite
 ```
 
 References: 
