@@ -25,7 +25,7 @@ The BMS system is a simple and straightforward solution for managing finances am
     2.1 Home Management Page (Settings for Home) - Settings Page
         2.1.1 Create / Select Home (eg. MH 4/2)
         2.1.1 Send invite to other user
-        2.1.2 Set Monthly Contribution for each housemate (Every month need to contribute how much)
+        2.1.2 Set Monthly Contribution for each housemate (Every months need to contribute how much)
         2.1.3 CRUD Category
 
     2.2 Add expenses
@@ -33,6 +33,7 @@ The BMS system is a simple and straightforward solution for managing finances am
         2.2.2 Add Category
         2.2.3 Add Amount
         2.3.3 Add Note
+        2.3.4 Add User that pay
 
     2.3. Add Payment
         2.3.1 Add Date
@@ -55,6 +56,7 @@ The BMS system is a simple and straightforward solution for managing finances am
 ```mermaid
 erDiagram
     user ||--o{ user_home : stays
+    user ||--o{ expenses : pay
     user {
         int id PK
         string username
@@ -85,6 +87,7 @@ erDiagram
         int id PK
         string category FK "Category of Spending"
         int home_id FK "Which house is this spending?"
+        int user_id FK "Which user pay for this? reduce from their debt"
         date created_at
         float amount
         string note
