@@ -7,7 +7,7 @@ However, friend are friend, we definitely will encounter issue of bill splitment
 ## Problems:
 1. We have a treasurer where every month we have to give RM 100 + rental. RM 100 is mainly use for groceries, utlities and misc spending (dish washer, fans, repair).
 
-2. Sometimes, when we dine outside. We have the problem on someone other than tresurer pay ahead for us. He have to keep track everyone cost and wait for them to pay back. 
+<!-- 2. Sometimes, when we dine outside. We have the problem on someone other than tresurer pay ahead for us. He have to keep track everyone cost and wait for them to pay back.  -->
 
 Example: A pay for B, C, D meals ahead. But B, C, and D are having different cost for the meals.
 
@@ -15,7 +15,7 @@ Example: A pay for B, C, D meals ahead. But B, C, and D are having different cos
 
 BMS system is a system where its make manage your finance across student as easy as ABC! Just start with register, add bills. 
 
-There are 2 main function in the app, home bills management and personal bills management.
+<!-- There are 2 main function in the app, home bills management and personal bills management. -->
 
 ## Home Bill Management System
 
