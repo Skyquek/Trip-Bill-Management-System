@@ -1,11 +1,11 @@
 # Bill Management System (BMS)
 
-This project is a problem that I faced during my university time. In our final year, we have to rent outside and find our own housemate. In my case, my housemates are all my classmate which we are very good friends. 
+This project stems from an issue I encountered during my university days. During our final year, we had to rent a place and find our own housemates, who were all my classmates and close friends. 
 
-However, friend are friend, we definitely will encounter issue of bill splitment & finance when live together. There are few issues that we face during our stay in one year. 
+Despite our strong friendship, we still faced challenges in splitting bills and managing finances while living together. Over the course of one year, we encountered several problems in this area.
 
 ## Problems:
-1. We have a treasurer where every month we have to give RM 100 + rental. RM 100 is mainly use for groceries, utlities and misc spending (dish washer, fans, repair).
+1. Our treasurer collected RM 100 from each of us each month, along with the rental. This money was used to pay for groceries, utilities, and various other expenses such as dishwashers, fans, and repairs. However, keeping track of who had already paid was challenging, and the treasurer sometimes had to make adjustments, such as giving refunds, to account for discrepancies in expenses.
 
 <!-- 2. Sometimes, when we dine outside. We have the problem on someone other than tresurer pay ahead for us. He have to keep track everyone cost and wait for them to pay back.  -->
 
@@ -13,7 +13,7 @@ However, friend are friend, we definitely will encounter issue of bill splitment
 
 ## Solution:
 
-BMS system is a system where its make manage your finance across student as easy as ABC! Just start with register, add bills. 
+The BMS system is a simple and straightforward solution for managing finances among students. With just a few easy steps, such as registering and adding bills, it makes managing finances as easy as ABC.
 
 <!-- There are 2 main function in the app, home bills management and personal bills management. -->
 
