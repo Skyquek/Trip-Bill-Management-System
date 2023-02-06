@@ -25,7 +25,7 @@ The BMS system is a simple and straightforward solution for managing finances am
     2.1 Home Management Page (Settings for Home) - Settings Page
         2.1.1 Create / Select Home (eg. MH 4/2)
         2.1.1 Send invite to other user
-        2.1.2 Set Monthly Contribution for each housemate (Every months need to contribute how much)
+        2.1.2 Set Monthly Contribution for each housemate (Every months need to contribute how much, some people might contribute less)
         2.1.3 CRUD Category
 
     2.2 Add expenses
