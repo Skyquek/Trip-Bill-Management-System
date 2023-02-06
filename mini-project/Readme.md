@@ -9,7 +9,7 @@ However, friend are friend, we definitely will encounter issue of bill splitment
 
 <!-- 2. Sometimes, when we dine outside. We have the problem on someone other than tresurer pay ahead for us. He have to keep track everyone cost and wait for them to pay back.  -->
 
-Example: A pay for B, C, D meals ahead. But B, C, and D are having different cost for the meals.
+<!-- Example: A pay for B, C, D meals ahead. But B, C, and D are having different cost for the meals. -->
 
 ## Solution:
 
