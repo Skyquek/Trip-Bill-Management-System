@@ -88,9 +88,10 @@ erDiagram
         string category FK "Category of Spending"
         int home_id FK "Which house is this spending?"
         int user_id FK "Which user pay for this? reduce from their debt"
-        date created_at
         float amount
         string note
+        date created_at
+        date update_at
     }
 
     category {
@@ -103,9 +104,10 @@ erDiagram
         int id PK
         int user_id FK "User that pay for their monthly debt"
         int home_id FK "Pay for which house"
-        date created_at
         float amount
         string note
+        date created_at
+        timestamp updated_at
     }
 
     debt |{--|| user : "has"
@@ -114,6 +116,7 @@ erDiagram
         int user_id FK "Every user has debt"
         int home_id FK "This debt is under which home?"
         float amount
+        date created_at
         date updated_at
     }
 
