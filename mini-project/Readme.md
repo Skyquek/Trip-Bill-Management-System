@@ -73,8 +73,8 @@ erDiagram
         int id PK
         string name
         string address
-        date created_at
-        date updated_at
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     user_home {
@@ -90,8 +90,8 @@ erDiagram
         int user_id FK "Which user pay for this? reduce from their debt"
         float amount
         string note
-        date created_at
-        date update_at
+        timestamptz created_at
+        timestamptz update_at
     }
 
     category {
@@ -106,8 +106,8 @@ erDiagram
         int home_id FK "Pay for which house"
         float amount
         string note
-        date created_at
-        timestamp updated_at
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     debt |{--|| user : "has"
@@ -116,8 +116,8 @@ erDiagram
         int user_id FK "Every user has debt"
         int home_id FK "This debt is under which home?"
         float amount
-        date created_at
-        date updated_at
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     
