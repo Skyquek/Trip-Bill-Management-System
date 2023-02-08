@@ -70,13 +70,12 @@ erDiagram
         string phone_number
     }
 
-    expenses ||--|| category: "has"
+    expenses }o--|| category: "has"
     expenses {
         int id PK
         string category FK "Category of Spending"
-        int home_id FK "Which house is this spending?"
         int user_id FK "Which user pay for this? reduce from their debt"
-        float amount
+        decimal amount
         string note
         timestamptz created_at
         timestamptz update_at
@@ -91,8 +90,7 @@ erDiagram
     payment {
         int id PK
         int user_id FK "User that pay for their monthly debt"
-        int home_id FK "Pay for which house"
-        float amount
+        decimal amount
         string note
         timestamptz created_at
         timestamptz updated_at
@@ -102,14 +100,9 @@ erDiagram
     debt {
         int id PK
         int user_id FK "Every user has debt"
-        int home_id FK "This debt is under which home?"
-        float amount
+        decimal amount
         timestamptz created_at
         timestamptz updated_at
     }
-
-    
-
-
 
 ```
