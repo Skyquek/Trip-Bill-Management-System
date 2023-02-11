@@ -104,5 +104,14 @@ erDiagram
         timestamptz created_at
         timestamptz updated_at
     }
-
 ```
+
+TODO:
+
+1. Django Models (Create all erd)
+    - models
+    - migrations
+    - admins
+
+2. Start with strawberry
+    - 
