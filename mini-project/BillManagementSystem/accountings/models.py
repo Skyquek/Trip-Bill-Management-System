@@ -10,20 +10,20 @@ from django.contrib.auth.models import User
 class Payment(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
-    note = models.TextField()
+    note = models.TextField(max_length=1000)
     
 class Debt(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     
 class Category(models.Model):
-    name = models.TextField()
+    name = models.TextField(max_length=50)
     
 class Expenses(TimeStampedModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
-    note = models.TextField()
+    note = models.TextField(max_length=1000)
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
