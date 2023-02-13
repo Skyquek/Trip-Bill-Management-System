@@ -7,14 +7,14 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Payment(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     note = models.TextField()
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     
 class Debt(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
@@ -24,7 +24,7 @@ class Category(models.Model):
     
 class Expenses(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     note = models.TextField()
     created_at = models.DateTimeField()
