@@ -10,17 +10,17 @@ CREATE TABLE "accountings_student" ("id" integer NOT NULL PRIMARY KEY AUTOINCREM
 --
 -- Create model Payment
 --
-CREATE TABLE "accountings_payment" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "amount_currency" varchar(3) NOT NULL, "amount" decimal NOT NULL, "note" text NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "user_id_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE "accountings_payment" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "created" datetime NOT NULL, "modified" datetime NOT NULL, "amount_currency" varchar(3) NOT NULL, "amount" decimal NOT NULL, "note" text NOT NULL, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
 --
 -- Create model Expenses
 --
-CREATE TABLE "accountings_expenses" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "amount_currency" varchar(3) NOT NULL, "amount" decimal NOT NULL, "note" text NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "category_id" bigint NOT NULL REFERENCES "accountings_category" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE "accountings_expenses" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "created" datetime NOT NULL, "modified" datetime NOT NULL, "amount_currency" varchar(3) NOT NULL, "amount" decimal NOT NULL, "note" text NOT NULL, "category_id" bigint NOT NULL REFERENCES "accountings_category" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
 --
 -- Create model Debt
 --
-CREATE TABLE "accountings_debt" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "amount_currency" varchar(3) NOT NULL, "amount" decimal NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "user_id_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
-CREATE INDEX "accountings_payment_user_id_id_8398c27b" ON "accountings_payment" ("user_id_id");
+CREATE TABLE "accountings_debt" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "created" datetime NOT NULL, "modified" datetime NOT NULL, "amount_currency" varchar(3) NOT NULL, "amount" decimal NOT NULL, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "accountings_payment_user_id_4bf7fddd" ON "accountings_payment" ("user_id");
 CREATE INDEX "accountings_expenses_category_id_54df5b5f" ON "accountings_expenses" ("category_id");
-CREATE INDEX "accountings_expenses_user_id_id_1fa9b981" ON "accountings_expenses" ("user_id_id");
-CREATE INDEX "accountings_debt_user_id_id_2edd167f" ON "accountings_debt" ("user_id_id");
+CREATE INDEX "accountings_expenses_user_id_be3ff88f" ON "accountings_expenses" ("user_id");
+CREATE INDEX "accountings_debt_user_id_7d84dd2d" ON "accountings_debt" ("user_id");
 COMMIT;
