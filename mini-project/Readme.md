@@ -17,6 +17,10 @@ The BMS system is a simple and straightforward solution for managing finances am
 
 <!-- There are 2 main function in the app, home bills management and personal bills management. -->
 
+## Scope
+
+1. Assume all users of this system stay in the same house.
+
 ## Home Bill Management System
 
 ```PseudoCode
@@ -55,7 +59,6 @@ The BMS system is a simple and straightforward solution for managing finances am
 
 ```mermaid
 erDiagram
-    user ||--o{ user_home : stays
     user ||--o{ expenses : pay
     user {
         int id PK
@@ -66,29 +69,13 @@ erDiagram
         string email
         string phone_number
     }
-    
-    home ||--o{ user_home : resides
-    home ||--o{ expenses : have
-    home {
-        int id PK
-        string name
-        string address
-        datetime created
-        datetime modified
-    }
 
-    user_home {
-        int user_id FK "Housemate"
-        int home_id FK "Home"
-    }
-
-    expenses ||--|| category: "has"
+    expenses }o--|| category: "has"
     expenses {
         int id PK
         string category FK "Category of Spending"
-        int home_id FK "Which house is this spending?"
         int user_id FK "Which user pay for this? reduce from their debt"
-        float amount
+        decimal amount
         string note
         datetime created
         datetime modified
@@ -103,8 +90,7 @@ erDiagram
     payment {
         int id PK
         int user_id FK "User that pay for their monthly debt"
-        int home_id FK "Pay for which house"
-        float amount
+        decimal amount
         string note
         datetime created
         datetime modified
@@ -114,14 +100,18 @@ erDiagram
     debt {
         int id PK
         int user_id FK "Every user has debt"
-        int home_id FK "This debt is under which home?"
-        float amount
+        decimal amount
         datetime created
         datetime modified
     }
-
-    
-
-
-
 ```
+
+TODO:
+
+1. Django Models (Create all erd)
+    - models
+    - migrations
+    - admins
+
+2. Start with strawberry
+    - 
