@@ -137,3 +137,4 @@ GitHub.sublime-settings
 .history
 mini-project/BillManagementSystem/BillManagementSystem/__pycache__
 mini-project/BillManagementSystem/accountings/__pycache__
+mini-project/BillManagementSystem/db.sqlite3
