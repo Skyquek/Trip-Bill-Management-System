@@ -27,7 +27,7 @@ class Expenses(TimeStampedModel):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birthday = models.DateTimeField()
+    birthday = models.DateField()
     email = models.EmailField()
     phone_number = PhoneNumberField(blank=True)
 
