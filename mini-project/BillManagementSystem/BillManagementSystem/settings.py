@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "accountings.apps.AccountingsConfig",
+    "accounting.apps.AccountingConfig",
     "phonenumber_field",
     "djmoney",
     "django.contrib.admin",
