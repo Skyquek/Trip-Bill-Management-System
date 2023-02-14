@@ -77,8 +77,8 @@ erDiagram
         int user_id FK "Which user pay for this? reduce from their debt"
         decimal amount
         string note
-        timestamptz created_at
-        timestamptz update_at
+        datetime created
+        datetime modified
     }
 
     category {
@@ -92,8 +92,8 @@ erDiagram
         int user_id FK "User that pay for their monthly debt"
         decimal amount
         string note
-        timestamptz created_at
-        timestamptz updated_at
+        datetime created
+        datetime modified
     }
 
     debt |{--|| user : "has"
@@ -101,8 +101,8 @@ erDiagram
         int id PK
         int user_id FK "Every user has debt"
         decimal amount
-        timestamptz created_at
-        timestamptz updated_at
+        datetime created
+        datetime modified
     }
 ```
 
