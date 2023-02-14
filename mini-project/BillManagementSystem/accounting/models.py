@@ -17,7 +17,7 @@ class Debt(TimeStampedModel):
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     
 class Category(models.Model):
-    name = models.TextField(max_length=50)
+    name = models.TextField(max_length=50, unique=True)
     
 class Expenses(TimeStampedModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
