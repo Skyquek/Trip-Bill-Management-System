@@ -27,7 +27,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    user ||--o{ bills : pay
+    user ||--o{ bill : pay
     user {
         int id PK
         string username
@@ -38,18 +38,19 @@ erDiagram
         string phone_number
     }
 
-    bills }o--|| category: "has"
-    bills {
+    bill }o--|| category: "has"
+    bill {
         int id PK
         string category FK "Category of Spending"
         int user_id FK "Which user pay for this?"
+        varchar title
         decimal amount
         string note
         datetime created
         datetime modified
     }
 
-    individual_spending }|--|| bills: "has"
+    individual_spending }|--|| bill: "has"
     individual_spending {
         int id PK
         int bill_id FK
