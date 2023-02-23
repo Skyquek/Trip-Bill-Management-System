@@ -55,6 +55,8 @@ erDiagram
         int bill_id FK
         int user_id FK
         decimal amount "Amount of each user spending"
+        datetime created
+        datetime modified
     }
 
     category {
