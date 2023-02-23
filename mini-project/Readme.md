@@ -63,4 +63,8 @@ erDiagram
     }
 ```
 
-Note: ``Tax = (bill_amount - SUM(individual_spending)) / len(individual_spending)``
+Note: 
+
+```
+Tax = (bill_amount - SUM(individual_spending)) / len(individual_spending)
+```
