@@ -27,6 +27,7 @@ class IndividualSpending(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     note = models.TextField()
+    title = models.CharField(max_length=50)
     
 class Debt(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
