@@ -13,7 +13,7 @@ class User(models.Model):
     phone_number = PhoneNumberField(blank=True)
     
 class Category(models.Model):
-    name = models.TextField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     
 class Bill(TimeStampedModel):
     title = models.CharField(max_length=50)
@@ -32,7 +32,6 @@ class Debt(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     
-
 
 
 
