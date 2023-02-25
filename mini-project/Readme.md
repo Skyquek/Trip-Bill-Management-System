@@ -21,6 +21,7 @@ flowchart LR
     id1[[Login]] --> id2[[Add Payment]]
     --> id3[/Input bills/] --> id4[/Add Note/]
     --> id5[/Input payer name/] --> id6[/Input individual cost/]
+    --> id7[[Click View Debt]] --> id8[/Display Debt Summary/]
 ``` 
 
 ### ERD
