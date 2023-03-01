@@ -32,6 +32,7 @@ class User:
     id: auto
     birthday: auto
     phone_number: str
+    user: str
     bills: List[Bill]
     individual_spendings: List[Bill]
     
