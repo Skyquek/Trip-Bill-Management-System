@@ -2,6 +2,7 @@ import strawberry
 from strawberry import auto
 from typing import List
 from . import models
+from django.contrib.auth.models import User as AdminUser
     
 @strawberry.django.type(models.Bill)
 class Bill:
@@ -35,4 +36,13 @@ class User:
     user: str
     bills: List[Bill]
     individual_spendings: List[Bill]
+    
+    
+@strawberry.django.type(AdminUser)
+class AdminUser:
+    id: int
+    username: str
+    password: auto
+    email: str
+    
     
