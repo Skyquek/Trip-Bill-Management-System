@@ -1,4 +1,4 @@
-set -euo pipefail
+set -eu pipefail
 
 # Install python requirements.
 tool/gh_codespaces/install_dependencies.sh
