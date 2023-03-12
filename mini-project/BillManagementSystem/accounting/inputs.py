@@ -22,15 +22,6 @@ class CategoryInput:
     id: auto
     name: auto
     
-@strawberry.django.input(models.Bill)
-class BillInput:
-    id: auto
-    user_id: int
-    title: auto
-    category: int
-    amount: decimal.Decimal
-    note: auto
-    
 @strawberry.django.input(models.IndividualSpending)
 class IndividualSpendingInput:
     id: auto
