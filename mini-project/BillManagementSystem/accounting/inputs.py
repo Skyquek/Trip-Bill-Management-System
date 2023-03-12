@@ -2,20 +2,18 @@ import strawberry
 from strawberry import auto
 from typing import List
 from . import models
-from django.contrib.auth.models import User as AdminUser
 import decimal
-
-@strawberry.django.input(AdminUser)
-class AdminInput:
-    username: str
-    password: str
+from datetime import date
     
-@strawberry.django.input(models.User)
-class UserInput:
-    id: auto
-    birthday: auto
+@strawberry.input
+class RegisterInput:
+    username: str
+    first_name: str
+    last_name: str
+    email: str
+    password: str
+    birthday: date
     phone_number: str
-    user: str
     
 @strawberry.django.input(models.Category)
 class CategoryInput:

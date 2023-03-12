@@ -1,62 +1,16 @@
 import strawberry
-from typing import List, Optional
-from .types import AdminUser
-from .inputs import CategoryInput
+from django.db import IntegrityError
+from typing import List, Optional, Union
+from django.contrib.auth.models import User as AdminUser
+from .inputs import CategoryInput, RegisterInput
 # from strawberry_django import mutations
 from . import models
 from strawberry import auto
 from django.core.exceptions import ValidationError
+from django.contrib.auth.tokens import default_token_generator
+from datetime import date
 
-# from .inputs import UserInput, AdminInput, CategoryInput, IndividualSpendingInput
-
-@strawberry.django.type(models.IndividualSpending)
-class IndividualSpending:
-    id: auto
-    bill: auto
-    user: 'User'
-    amount: str
-    note: auto
-    title: auto
-    
-@strawberry.django.type(AdminUser)
-class AdminUser:
-    id: int
-    username: str
-    password: auto
-    email: str
-    
-#####################################################
-def get_category_for_bill(root) -> "Category":
-    return Category(
-        id=1,
-        name="Food"
-    )
-
-@strawberry.type
-class Bill:
-    id: int
-    user_id: int
-    title: str
-    category: "Category" = strawberry.field(resolver=get_category_for_bill)
-    amount: str
-    note: str
-    
-def get_bills_for_category(root):
-    return [
-        Bill(
-            id=1,
-            user_id=1,
-            title="Skypark Dinner",
-            amount=100,
-            note="bleh!"
-        )
-    ]
-
-@strawberry.type
-class Category:
-    id: int
-    name: str
-    bills: List[Bill] = strawberry.field(resolver=get_bills_for_category)
+from .types import IndividualSpending, Bill, Category, User
 
 def get_categories(root) -> List[Bill]:
     return [
@@ -70,15 +24,6 @@ def get_categories(root) -> List[Bill]:
         )
     ]
     
-@strawberry.django.type(models.User)
-class User:
-    id: auto
-    birthday: auto
-    phone_number: str
-    user: str
-    bills: List[Bill]
-    individual_spendings: List[Bill]
-
 def get_bills_by_filter(self, 
                         id: Optional[int] = None, 
                         user_id: Optional[int] = None, 
@@ -115,28 +60,65 @@ class Query:
     # individual_spendings: List[IndividualSpending] = strawberry.django.field()
     # users: List[User] = strawberry.django.field()
 
-################################ Mutation Function
+################################ Mutation Function ##############################
 @strawberry.type
 class CategoryResponse:
     success: bool
-    category: Category = None
-    error: str = None
+    category: Category = ""
+    error: str = ""
     
 @strawberry.type
+class AuthResponse:
+    success: bool
+    token: str = ""
+    user: Union[User, None]
+    error: str = ""
+
+@strawberry.type
 class Mutation:
+    
+    @strawberry.mutation
+    def add_user(self, register_input: RegisterInput) -> AuthResponse:
+        try:
+            django_user = AdminUser.objects.create_user(
+                username=register_input.username, 
+                email=register_input.email, 
+                password=register_input.password, 
+                first_name=register_input.first_name, 
+                last_name = register_input.last_name
+            )
+    
+            accounting_user = models.User(user=django_user, birthday=register_input.birthday, phone_number=register_input.phone_number)
+            accounting_user.save()
+            
+            new_user = User(
+                id=accounting_user.id,
+                username=django_user.username,
+                first_name=django_user.first_name,
+                last_name=django_user.last_name,
+                email=django_user.email,
+                birthday=accounting_user.birthday,
+                phone_number=accounting_user.phone_number,
+                bills= None,
+                individual_spendings=None
+            )
+            token = default_token_generator.make_token(django_user)
+            
+            return AuthResponse(success=True, token=token, user=new_user)
+        except IntegrityError as e:
+            return AuthResponse(success=False, user=None, error="This username is taken. Please choose others!")
+        except ValidationError as e:
+            return AuthResponse(success=False, user=None, error=str(e))
+    
     @strawberry.mutation
     def add_category(self, category: CategoryInput) -> CategoryResponse:
         category = models.Category(name=category.name)
         try:
             category.save()
             return CategoryResponse(success=True, category=category)
+        except IntegrityError as e:
+            return CategoryResponse(success=False, error="This category is taken. Don't create similar category!")
         except ValidationError as e:
-            return CategoryResponse(success=False, error=str(e))    
-    
-#     createAdmin: AdminUser = mutations.create(AdminInput)
-#     createUser: User = mutations.create(UserInput)
-#     createCategory: Category = mutations.create(CategoryInput)
-#     # createBill: Bill = mutations.create(BillInput)
-#     createIndividualSpending: IndividualSpending = mutations.create(IndividualSpendingInput)
-    
+            return CategoryResponse(success=False, error=str(e))
+
 schema = strawberry.Schema(query=Query, mutation=Mutation)

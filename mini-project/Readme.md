@@ -72,3 +72,23 @@ Note:
 ```
 Tax = (bill_amount - SUM(individual_spending)) / len(individual_spending)
 ```
+
+
+TODO LIST:
+
+Create:
+
+- [x] Category
+- [ ] User
+- [ ] Bill
+- [ ] Individual User
+
+Read:
+- [x] Category
+- [ ] User
+- [x] Bill
+- [ ] Individual User
+
+Update:
+
+Delete:
