@@ -80,7 +80,7 @@ Create:
 
 - [x] Category
 - [x] User
-- [ ] Bill
+- [x] Bill
 - [ ] Individual User
 
 Read:
