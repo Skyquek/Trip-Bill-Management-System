@@ -79,11 +79,12 @@ TODO LIST:
 Create:
 
 - [x] Category
-- [ ] User
+- [x] User
 - [ ] Bill
 - [ ] Individual User
 
 Read:
+
 - [x] Category
 - [ ] User
 - [x] Bill

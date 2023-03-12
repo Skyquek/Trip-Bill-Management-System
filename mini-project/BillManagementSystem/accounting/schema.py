@@ -2,13 +2,14 @@ import strawberry
 from django.db import IntegrityError
 from typing import List, Optional, Union
 from django.contrib.auth.models import User as AdminUser
-from .inputs import CategoryInput, RegisterInput
+from .inputs import CategoryInput, RegisterInput, BillInput
 # from strawberry_django import mutations
 from . import models
 from strawberry import auto
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from datetime import date
+from django.db.models import F
 
 from .types import IndividualSpending, Bill, Category, User
 
@@ -93,7 +94,7 @@ class Mutation:
             
             new_user = User(
                 id=accounting_user.id,
-                username=django_user.username,
+                user=django_user.username,
                 first_name=django_user.first_name,
                 last_name=django_user.last_name,
                 email=django_user.email,
@@ -120,5 +121,52 @@ class Mutation:
             return CategoryResponse(success=False, error="This category is taken. Don't create similar category!")
         except ValidationError as e:
             return CategoryResponse(success=False, error=str(e))
+        
+    @strawberry.mutation
+    def add_bill(self, bill: BillInput) -> Bill:
+        category = models.Category.objects.get(id=bill.category_id)
+        biller = models.User.objects.get(id=bill.user_id)
+        
+        bill = models.Bill(title=bill.title, category=category, user=biller, amount=bill.amount, note=bill.note)
+        bill.save()
+                        
+        user = models.User.objects.select_related('user').filter(user_id=bill.user_id).values(
+            'id', 
+            'user',
+            'user__first_name',
+            'user__last_name',
+            'user__email',
+            'birthday',
+            'phone_number',
+        ).get()
+                        
+        if not user['user__first_name']:
+            user['user__first_name'] = ''
+            
+        if not user['user__last_name']:
+            user['user__last_name'] = ''
+        
+        user = User(
+            id=user["id"], 
+            username=user["user"],
+            first_name=user["user__first_name"],
+            last_name=user["user__last_name"],
+            email=user["user__email"],
+            birthday=user["birthday"],
+            phone_number=user["phone_number"],
+            bills = models.Bill.objects.filter(user=user["id"]),
+            individual_spendings = models.IndividualSpending.objects.filter(user=user["id"])
+        )
+                
+        bill_res = Bill(
+            id=bill.id, 
+            user=user, 
+            title=bill.title, 
+            category=category, 
+            amount=bill.amount, 
+            note=bill.note
+        )
+        
+        return bill_res
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

@@ -19,14 +19,23 @@ class RegisterInput:
 class CategoryInput:
     name: str
     
-@strawberry.django.input(models.IndividualSpending)
+@strawberry.input
+class BillInput:
+    title: str
+    category_id: int
+    user_id: int
+    amount: decimal.Decimal
+    note: str
+    
+@strawberry.input
 class IndividualSpendingInput:
-    id: auto
+    id: int
     bill: int
     user: int
     amount: decimal.Decimal
     note: str
     title: str
-    
+
+
     
     

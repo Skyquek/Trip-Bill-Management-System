@@ -33,9 +33,9 @@ class IndividualSpending:
 @strawberry.type
 class Bill:
     id: int
-    user_id: int
+    user: "User"
     title: str
-    category: "Category" = strawberry.field(resolver=get_category_for_bill)
+    category: "Category"
     amount: str
     note: str
     
