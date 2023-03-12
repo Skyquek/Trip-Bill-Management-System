@@ -19,8 +19,7 @@ class UserInput:
     
 @strawberry.django.input(models.Category)
 class CategoryInput:
-    id: auto
-    name: auto
+    name: str
     
 @strawberry.django.input(models.IndividualSpending)
 class IndividualSpendingInput:

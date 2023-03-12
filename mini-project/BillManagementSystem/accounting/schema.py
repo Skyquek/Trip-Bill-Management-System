@@ -1,9 +1,11 @@
 import strawberry
 from typing import List, Optional
 from .types import AdminUser
+from .inputs import CategoryInput
 # from strawberry_django import mutations
 from . import models
 from strawberry import auto
+from django.core.exceptions import ValidationError
 
 # from .inputs import UserInput, AdminInput, CategoryInput, IndividualSpendingInput
 
@@ -104,11 +106,7 @@ def get_bills_by_filter(self,
             category = models.Category.objects.get(id=category_id)
             bill = queryset.filter(category=category)
             
-            
-        
-    
         return bill
-    
 
 @strawberry.type
 class Query:
@@ -116,13 +114,29 @@ class Query:
     categories: List[Category] = strawberry.field(resolver=get_categories)
     # individual_spendings: List[IndividualSpending] = strawberry.django.field()
     # users: List[User] = strawberry.django.field()
+
+################################ Mutation Function
+@strawberry.type
+class CategoryResponse:
+    success: bool
+    category: Category = None
+    error: str = None
     
-# @strawberry.type
-# class Mutation:
+@strawberry.type
+class Mutation:
+    @strawberry.mutation
+    def add_category(self, category: CategoryInput) -> CategoryResponse:
+        category = models.Category(name=category.name)
+        try:
+            category.save()
+            return CategoryResponse(success=True, category=category)
+        except ValidationError as e:
+            return CategoryResponse(success=False, error=str(e))    
+    
 #     createAdmin: AdminUser = mutations.create(AdminInput)
 #     createUser: User = mutations.create(UserInput)
 #     createCategory: Category = mutations.create(CategoryInput)
 #     # createBill: Bill = mutations.create(BillInput)
 #     createIndividualSpending: IndividualSpending = mutations.create(IndividualSpendingInput)
     
-schema = strawberry.Schema(query=Query)
+schema = strawberry.Schema(query=Query, mutation=Mutation)
