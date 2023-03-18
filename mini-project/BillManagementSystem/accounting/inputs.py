@@ -29,9 +29,8 @@ class BillInput:
     
 @strawberry.input
 class IndividualSpendingInput:
-    id: int
-    bill: int
-    user: int
+    bill_id: int
+    user_id: int
     amount: decimal.Decimal
     note: str
     title: str

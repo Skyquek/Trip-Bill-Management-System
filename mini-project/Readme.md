@@ -79,16 +79,16 @@ TODO LIST:
 Create:
 
 - [x] Category
-- [x] User
+- [] User
 - [x] Bill
-- [ ] Individual User
+- [x] Individual Spending
 
 Read:
 
-- [x] Category
-- [ ] User
-- [x] Bill
-- [ ] Individual User
+- [] Category
+- [] User
+- [] Bill
+- [] Individual Spending
 
 Update:
 

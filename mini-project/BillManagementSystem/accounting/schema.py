@@ -2,7 +2,7 @@ import strawberry
 from django.db import IntegrityError
 from typing import List, Optional, Union
 from django.contrib.auth.models import User as AdminUser
-from .inputs import CategoryInput, RegisterInput, BillInput
+from .inputs import CategoryInput, RegisterInput, BillInput, IndividualSpendingInput
 # from strawberry_django import mutations
 from . import models
 from strawberry import auto
@@ -11,7 +11,7 @@ from django.contrib.auth.tokens import default_token_generator
 from datetime import date
 from django.db.models import F
 
-from .types import IndividualSpending, Bill, Category, User
+from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse
 
 def get_categories(root) -> List[Bill]:
     return [
@@ -43,7 +43,6 @@ def get_bills_by_filter(self,
         if user_id:
             user = models.User.objects.get(id=user_id)
             bill = queryset.filter(user=user)
-            print(bill)
             
         if title:
             bill = queryset.filter(title__icontains=title)
@@ -58,22 +57,6 @@ def get_bills_by_filter(self,
 class Query:
     bill: List[Bill] = strawberry.field(resolver=get_bills_by_filter)
     categories: List[Category] = strawberry.field(resolver=get_categories)
-    # individual_spendings: List[IndividualSpending] = strawberry.django.field()
-    # users: List[User] = strawberry.django.field()
-
-################################ Mutation Function ##############################
-@strawberry.type
-class CategoryResponse:
-    success: bool
-    category: Category = ""
-    error: str = ""
-    
-@strawberry.type
-class AuthResponse:
-    success: bool
-    token: str = ""
-    user: Union[User, None]
-    error: str = ""
 
 @strawberry.type
 class Mutation:
@@ -94,7 +77,7 @@ class Mutation:
             
             new_user = User(
                 id=accounting_user.id,
-                user=django_user.username,
+                username=django_user.username,
                 first_name=django_user.first_name,
                 last_name=django_user.last_name,
                 email=django_user.email,
@@ -118,9 +101,9 @@ class Mutation:
             category.save()
             return CategoryResponse(success=True, category=category)
         except IntegrityError as e:
-            return CategoryResponse(success=False, error="This category is taken. Don't create similar category!")
+            return CategoryResponse(success=False, category=None, error="This category is taken. Don't create similar category!") 
         except ValidationError as e:
-            return CategoryResponse(success=False, error=str(e))
+            return CategoryResponse(success=False, category=None, error=str(e))
         
     @strawberry.mutation
     def add_bill(self, bill: BillInput) -> Bill:
@@ -129,38 +112,10 @@ class Mutation:
         
         bill = models.Bill(title=bill.title, category=category, user=biller, amount=bill.amount, note=bill.note)
         bill.save()
-                        
-        user = models.User.objects.select_related('user').filter(user_id=bill.user_id).values(
-            'id', 
-            'user',
-            'user__first_name',
-            'user__last_name',
-            'user__email',
-            'birthday',
-            'phone_number',
-        ).get()
-                        
-        if not user['user__first_name']:
-            user['user__first_name'] = ''
-            
-        if not user['user__last_name']:
-            user['user__last_name'] = ''
-        
-        user = User(
-            id=user["id"], 
-            username=user["user"],
-            first_name=user["user__first_name"],
-            last_name=user["user__last_name"],
-            email=user["user__email"],
-            birthday=user["birthday"],
-            phone_number=user["phone_number"],
-            bills = models.Bill.objects.filter(user=user["id"]),
-            individual_spendings = models.IndividualSpending.objects.filter(user=user["id"])
-        )
                 
         bill_res = Bill(
             id=bill.id, 
-            user=user, 
+            user=get_user_all_details(bill.user_id), 
             title=bill.title, 
             category=category, 
             amount=bill.amount, 
@@ -169,4 +124,49 @@ class Mutation:
         
         return bill_res
 
+    @strawberry.mutation
+    def add_individual_spending(self, spending: IndividualSpendingInput) -> IndividualSpendingResponse:
+        try:
+            bill = models.Bill.objects.get(id=spending.bill_id)
+            individual_user_spending = models.User.objects.get(id=spending.user_id)
+            
+            # Save the individual spending
+            spending = models.IndividualSpending(
+                bill=bill, 
+                user=individual_user_spending, 
+                amount=spending.amount, 
+                note=spending.note, 
+                title=spending.title
+            )
+            spending.save()
+            
+            bill = Bill(
+                id=bill.id,
+                user= get_user_all_details(bill.user_id),
+                title=bill.title,
+                category=bill.category,
+                amount = bill.amount,
+                note=bill.note
+            )
+            
+            spending = IndividualSpending(
+                id = spending.id,
+                bill = bill,
+                user = get_user_all_details(spending.user_id),
+                amount = spending.amount,
+                note = spending.note,
+                title = spending.title
+            )
+            
+            return IndividualSpendingResponse(
+                success=True,
+                individual_spending=spending
+            )
+        except ValidationError as e:
+            return IndividualSpendingResponse(
+                success=False, 
+                individual_spending=None, 
+                error= str(e)
+            )
+            
 schema = strawberry.Schema(query=Query, mutation=Mutation)
