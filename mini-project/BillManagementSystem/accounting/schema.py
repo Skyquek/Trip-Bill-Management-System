@@ -30,7 +30,31 @@ def get_category_by_id(self, id: int) -> CategoryResponse:
             category= None,
             error='Bro, this category Does not Exist!'
         )    
+
+# User
+def get_all_users(root) -> List[User]:
+    users = models.User.objects.all()
     
+    users_list = list()
+    for user in users:
+        users_list.append(
+            User(
+            id=user.id, 
+            username=user.user.username,
+            first_name=user.user.first_name,
+            last_name=user.user.last_name,
+            email=user.user.email,
+            birthday=user.birthday,
+            phone_number=user.phone_number,
+            bills = models.Bill.objects.filter(user=user.id),
+            individual_spendings = models.IndividualSpending.objects.filter(user=user.id)
+        )
+    )  
+    
+    return users_list
+
+    
+# Bill    
 def get_bills_by_filter(self, 
                         id: Optional[int] = None, 
                         user_id: Optional[int] = None, 
@@ -59,11 +83,12 @@ def get_bills_by_filter(self,
             
         return bill
 
+
 @strawberry.type
 class Query:
     category: CategoryResponse = strawberry.field(resolver=get_category_by_id)
     categories: List[Category] = strawberry.field(resolver=get_all_categories)
-    
+    user: List[User] = strawberry.field(resolver=get_all_users)
     bill: List[Bill] = strawberry.field(resolver=get_bills_by_filter)
 
 @strawberry.type

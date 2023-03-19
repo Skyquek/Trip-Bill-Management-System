@@ -3,12 +3,6 @@ from strawberry import auto
 from typing import List, Union
 from datetime import date
 from . import models
-
-def get_category_for_bill(root) -> "Category":
-    return Category(
-        id=1,
-        name="Food"
-    )
     
 def get_bills_for_category(root):
     return [

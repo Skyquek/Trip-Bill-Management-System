@@ -85,7 +85,7 @@ Create:
 
 Read:
 
-- [] Category
+- [x] Category
 - [] User
 - [] Bill
 - [] Individual Spending
