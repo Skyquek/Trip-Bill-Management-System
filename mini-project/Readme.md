@@ -79,7 +79,7 @@ TODO LIST:
 Create:
 
 - [x] Category
-- [] User
+- [x] User
 - [x] Bill
 - [x] Individual Spending
 
@@ -92,4 +92,14 @@ Read:
 
 Update:
 
+- [] Category
+- [] User
+- [] Bill
+- [] Individual Spending
+
 Delete:
+
+- [] Category
+- [] User
+- [] Bill
+- [] Individual Spending
