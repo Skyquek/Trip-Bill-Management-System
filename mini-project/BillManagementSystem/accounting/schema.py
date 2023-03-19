@@ -6,24 +6,30 @@ from .inputs import CategoryInput, RegisterInput, BillInput, IndividualSpendingI
 # from strawberry_django import mutations
 from . import models
 from strawberry import auto
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.contrib.auth.tokens import default_token_generator
 from datetime import date
 from django.db.models import F
 
 from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse
 
-def get_categories(root) -> List[Bill]:
-    return [
-        Category(
-            id=1,
-            name="Food"
-        ),
-        Category(
-            id=2,
-            name="Parking"
+# Category
+def get_all_categories(root) -> List[Category]:
+    return models.Category.objects.all()
+
+def get_category_by_id(self, id: int) -> CategoryResponse:
+    try:
+        category = models.Category.objects.get(id=id)
+        return CategoryResponse(
+            success=True,
+            category=category
         )
-    ]
+    except models.Category.DoesNotExist as e:
+        return CategoryResponse(
+            success=False,
+            category= None,
+            error='Bro, this category Does not Exist!'
+        )    
     
 def get_bills_by_filter(self, 
                         id: Optional[int] = None, 
@@ -55,8 +61,10 @@ def get_bills_by_filter(self,
 
 @strawberry.type
 class Query:
+    category: CategoryResponse = strawberry.field(resolver=get_category_by_id)
+    categories: List[Category] = strawberry.field(resolver=get_all_categories)
+    
     bill: List[Bill] = strawberry.field(resolver=get_bills_by_filter)
-    categories: List[Category] = strawberry.field(resolver=get_categories)
 
 @strawberry.type
 class Mutation:
