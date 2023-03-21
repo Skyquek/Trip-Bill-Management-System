@@ -2,7 +2,7 @@ import strawberry
 from strawberry import auto
 from typing import List, Union
 from datetime import date
-from . import models
+from .. import models
     
 def get_bills_for_category(root):
     return [
@@ -77,7 +77,10 @@ class CategoryResponse:
     category: Union[Category, None]
     error: str = ""
     
-
+@strawberry.type
+class UserResponse:
+    success: bool
+    user: User | None | List[User]
     
 def get_user_all_details(user_id: int):
     user = models.User.objects.select_related("user").filter(id=2).values(

@@ -1,9 +1,9 @@
 import strawberry
 from strawberry import auto
 from typing import List
-from . import models
+from .. import models
 import decimal
-from datetime import date
+from datetime import date 
     
 @strawberry.input
 class RegisterInput:

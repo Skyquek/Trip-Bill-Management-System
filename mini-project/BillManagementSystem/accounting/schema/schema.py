@@ -4,14 +4,14 @@ from typing import List, Optional, Union
 from django.contrib.auth.models import User as AdminUser
 from .inputs import CategoryInput, RegisterInput, BillInput, IndividualSpendingInput
 # from strawberry_django import mutations
-from . import models
+from .. import models
 from strawberry import auto
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.contrib.auth.tokens import default_token_generator
 from datetime import date
 from django.db.models import F
 
-from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse
+from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse, UserResponse
 
 # Category
 def get_all_categories(root) -> List[Category]:
@@ -34,12 +34,11 @@ def get_category_by_id(self, id: int) -> CategoryResponse:
 # User
 def get_all_users(root) -> List[User]:
     users = models.User.objects.all()
-    
     users_list = list()
     for user in users:
         users_list.append(
             User(
-            id=user.id, 
+            id=user.id,
             username=user.user.username,
             first_name=user.user.first_name,
             last_name=user.user.last_name,
@@ -53,6 +52,16 @@ def get_all_users(root) -> List[User]:
     
     return users_list
 
+# user
+def get_user_by_id(self, id: int) -> UserResponse:
+    try:
+        user : models.User = models.User.objects.get(id=id)
+        return User(
+            id=id,
+            username=user.user.username
+        )
+    except models.User.DoesNotExist as e:
+        return 
     
 # Bill    
 def get_bills_by_filter(self, 
@@ -83,7 +92,6 @@ def get_bills_by_filter(self,
             
         return bill
 
-
 @strawberry.type
 class Query:
     category: CategoryResponse = strawberry.field(resolver=get_category_by_id)
@@ -93,39 +101,33 @@ class Query:
 
 @strawberry.type
 class Mutation:
-    
     @strawberry.mutation
     def add_user(self, register_input: RegisterInput) -> AuthResponse:
-        try:
-            django_user = AdminUser.objects.create_user(
-                username=register_input.username, 
-                email=register_input.email, 
-                password=register_input.password, 
-                first_name=register_input.first_name, 
-                last_name = register_input.last_name
-            )
-    
-            accounting_user = models.User(user=django_user, birthday=register_input.birthday, phone_number=register_input.phone_number)
-            accounting_user.save()
-            
-            new_user = User(
-                id=accounting_user.id,
-                username=django_user.username,
-                first_name=django_user.first_name,
-                last_name=django_user.last_name,
-                email=django_user.email,
-                birthday=accounting_user.birthday,
-                phone_number=accounting_user.phone_number,
-                bills= None,
-                individual_spendings=None
-            )
-            token = default_token_generator.make_token(django_user)
-            
-            return AuthResponse(success=True, token=token, user=new_user)
-        except IntegrityError as e:
-            return AuthResponse(success=False, user=None, error="This username is taken. Please choose others!")
-        except ValidationError as e:
-            return AuthResponse(success=False, user=None, error=str(e))
+        django_user = AdminUser.objects.create_user(
+            username=register_input.username, 
+            email=register_input.email, 
+            password=register_input.password, 
+            first_name=register_input.first_name, 
+            last_name = register_input.last_name
+        )
+
+        accounting_user = models.User(user=django_user, birthday=register_input.birthday, phone_number=register_input.phone_number)
+        accounting_user.save()
+        
+        new_user = User(
+            id=accounting_user.id,
+            username=django_user.username,
+            first_name=django_user.first_name,
+            last_name=django_user.last_name,
+            email=django_user.email,
+            birthday=accounting_user.birthday,
+            phone_number=accounting_user.phone_number,
+            bills= None,
+            individual_spendings=None
+        )
+        token = default_token_generator.make_token(django_user)
+        
+        return AuthResponse(success=True, token=token, user=new_user)
     
     @strawberry.mutation
     def add_category(self, category: CategoryInput) -> CategoryResponse:
