@@ -1,19 +1,10 @@
 import strawberry
 from strawberry import auto
+import strawberry_django
 from typing import List, Union
 from datetime import date
 from .. import models
-    
-def get_bills_for_category(root):
-    return [
-        Bill(
-            id=1,
-            user_id=1,
-            title="Skypark Dinner",
-            amount=100,
-            note="bleh!"
-        )
-    ]
+from django.contrib.auth.models import User as DJangoUser
     
 @strawberry.django.type(models.IndividualSpending)
 class IndividualSpending:
@@ -37,7 +28,7 @@ class Bill:
 class Category:
     id: int
     name: str
-    bills: List[Bill] = strawberry.field(resolver=get_bills_for_category)
+    bills: List[Bill]
     
     
 @strawberry.type
@@ -51,6 +42,26 @@ class User:
     phone_number: str
     bills: Union[List[Bill], None]
     individual_spendings: Union[List[Bill], None]
+    
+@strawberry.django.type(models.User)
+class UserOutput:
+    id: int
+    username: str
+    # first_name: str
+    # last_name: str
+    email: str
+    birthday: date
+    phone_number: str
+    bills: Union[List[Bill], None]
+    individual_spendings: Union[List[Bill], None]
+
+    @strawberry.field
+    def first_name(self) -> str:
+        return self.user.first_name
+    
+    @strawberry.field
+    def last_name(self) -> str:
+        return self.user.last_name
     
 @strawberry.type
 class IndividualSpendingResponse:

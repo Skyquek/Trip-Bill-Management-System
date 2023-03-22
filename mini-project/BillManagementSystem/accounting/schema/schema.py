@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from typing import List, Optional, Union
 from django.contrib.auth.models import User as AdminUser
 from .inputs import CategoryInput, RegisterInput, BillInput, IndividualSpendingInput
-# from strawberry_django import mutations
+from strawberry_django import mutations
 from .. import models
 from strawberry import auto
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -11,7 +11,8 @@ from django.contrib.auth.tokens import default_token_generator
 from datetime import date
 from django.db.models import F
 
-from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse, UserResponse
+from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse, UserResponse, UserOutput
+from .filters import UserFilter
 
 # Category
 def get_all_categories(root) -> List[Category]:
@@ -96,7 +97,10 @@ def get_bills_by_filter(self,
 class Query:
     category: CategoryResponse = strawberry.field(resolver=get_category_by_id)
     categories: List[Category] = strawberry.field(resolver=get_all_categories)
-    user: List[User] = strawberry.field(resolver=get_all_users)
+    
+    users: List[User] = strawberry.field(resolver=get_all_users)
+    user: List[UserOutput] = strawberry.django.field(filters=UserFilter)
+
     bill: List[Bill] = strawberry.field(resolver=get_bills_by_filter)
 
 @strawberry.type
