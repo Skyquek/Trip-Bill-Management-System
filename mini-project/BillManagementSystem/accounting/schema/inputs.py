@@ -34,7 +34,3 @@ class IndividualSpendingInput:
     amount: decimal.Decimal
     note: str
     title: str
-
-
-    
-    

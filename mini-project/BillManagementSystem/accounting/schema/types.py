@@ -30,7 +30,6 @@ class Category:
     name: str
     bills: List[Bill]
     
-    
 @strawberry.type
 class User:
     id: int
@@ -45,15 +44,10 @@ class User:
     
 @strawberry.django.type(models.User)
 class UserOutput:
-    id: int
+    id: strawberry.ID
     username: str
-    # first_name: str
-    # last_name: str
-    email: str
     birthday: date
     phone_number: str
-    bills: Union[List[Bill], None]
-    individual_spendings: Union[List[Bill], None]
 
     @strawberry.field
     def first_name(self) -> str:
@@ -62,6 +56,15 @@ class UserOutput:
     @strawberry.field
     def last_name(self) -> str:
         return self.user.last_name
+    
+    @strawberry.field
+    def bills(self) -> List[Bill]:
+        return models.Bill.objects.filter(user=self.id)
+    
+    @strawberry.field
+    def individual_spendings(self) -> List[IndividualSpending]:
+        return models.IndividualSpending.objects.filter(user=self.id)
+        
     
 @strawberry.type
 class IndividualSpendingResponse:

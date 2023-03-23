@@ -32,3 +32,4 @@ class IndividualSpending(TimeStampedModel):
 
 
 
+# Hi I am quek and I love porn
