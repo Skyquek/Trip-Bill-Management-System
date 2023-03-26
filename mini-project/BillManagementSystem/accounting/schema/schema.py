@@ -27,7 +27,9 @@ class Query:
 class Mutation:
     # createUser: User = mutations.create(RegisterInput)
     
-    # TODO: How to change this to strawberry style        
+    # TODO: How to change this to strawberry style
+    # There is one bug on one to one relationship
+    # https://github.com/strawberry-graphql/strawberry-graphql-django/issues/235     
     @strawberry.mutation
     def add_user(self, register_input: RegisterInput) -> AuthResponse:
         django_user = AdminUser.objects.create_user(
@@ -43,14 +45,9 @@ class Mutation:
         
         new_user = User(
             id=accounting_user.id,
-            username=django_user.username,
-            first_name=django_user.first_name,
-            last_name=django_user.last_name,
-            email=django_user.email,
             birthday=accounting_user.birthday,
             phone_number=accounting_user.phone_number,
-            bills= None,
-            individual_spendings=None
+            django_user = django_user
         )
         token = default_token_generator.make_token(django_user)
         

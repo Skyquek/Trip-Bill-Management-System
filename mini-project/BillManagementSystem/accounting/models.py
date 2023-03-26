@@ -28,8 +28,3 @@ class IndividualSpending(TimeStampedModel):
     amount = MoneyField(max_digits=19, decimal_places=2, default_currency='MYR')
     note = models.TextField()
     title = models.CharField(max_length=50)
-    
-
-
-
-# Hi I am quek and I love porn
