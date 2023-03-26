@@ -12,25 +12,7 @@ from datetime import date
 from django.db.models import F
 
 from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse, UserResponse, UserOutput
-from .filters import UserFilter, BillFilter, IndividualSpendingFilter
-
-# Category
-def get_all_categories(root) -> List[Category]:
-    return models.Category.objects.all()
-
-def get_category_by_id(self, id: int) -> CategoryResponse:
-    try:
-        category = models.Category.objects.get(id=id)
-        return CategoryResponse(
-            success=True,
-            category=category
-        )
-    except models.Category.DoesNotExist as e:
-        return CategoryResponse(
-            success=False,
-            category= None,
-            error='Bro, this category Does not Exist!'
-        )    
+from .filters import UserFilter, BillFilter, IndividualSpendingFilter, CategoryFilter
 
 # User
 def get_all_users(root) -> List[User]:
@@ -53,50 +35,10 @@ def get_all_users(root) -> List[User]:
     
     return users_list
 
-# user
-def get_user_by_id(self, id: int) -> UserResponse:
-    try:
-        user : models.User = models.User.objects.get(id=id)
-        return User(
-            id=id,
-            username=user.user.username
-        )
-    except models.User.DoesNotExist as e:
-        return 
-    
-# Bill    
-def get_bills_by_filter(self, 
-                        id: Optional[int] = None, 
-                        user_id: Optional[int] = None, 
-                        title: Optional[str] = None, 
-                        category_id: Optional[int] = None) -> Bill:
-    
-    if not any((id, user_id, title, category_id)):
-        raise ValueError("Hey! Please query by at least one parameter!")
-    
-    if id is not None:
-        bill = models.Bill.objects.get(id=id)
-        return [bill]
-    else:
-        queryset = models.Bill.objects.all()
-        
-        if user_id:
-            user = models.User.objects.get(id=user_id)
-            bill = queryset.filter(user=user)
-            
-        if title:
-            bill = queryset.filter(title__icontains=title)
-            
-        if category_id:
-            category = models.Category.objects.get(id=category_id)
-            bill = queryset.filter(category=category)
-            
-        return bill
-
 @strawberry.type
 class Query:
-    category: CategoryResponse = strawberry.field(resolver=get_category_by_id)
-    categories: List[Category] = strawberry.field(resolver=get_all_categories)
+    categories: List[Category] = strawberry.django.field()
+    category: List[Category] = strawberry.django.field(filters=CategoryFilter)
     
     users: List[User] = strawberry.field(resolver=get_all_users)
     user: List[UserOutput] = strawberry.django.field(filters=UserFilter)

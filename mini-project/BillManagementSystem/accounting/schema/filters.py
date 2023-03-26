@@ -74,3 +74,11 @@ class IndividualSpendingFilter:
     
     def filter_amount_lte(self, queryset):
         return queryset.filter(amount__lte=self.amount_lte)
+
+@strawberry.django.filters.filter(models.Category)
+class CategoryFilter:
+    id: ID
+    name: auto
+    
+    def filter_name(self, queryset):
+        return queryset.filter(name__icontains=self.name)

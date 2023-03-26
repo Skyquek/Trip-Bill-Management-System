@@ -26,7 +26,7 @@ class Bill:
     user: "UserOutput"
 
     
-@strawberry.type
+@strawberry.django.type(models.Category)
 class Category:
     id: int
     name: str
