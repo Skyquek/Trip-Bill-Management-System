@@ -40,8 +40,11 @@ class Mutation:
             last_name = register_input.last_name
         )
 
-        accounting_user = models.User(user=django_user, birthday=register_input.birthday, phone_number=register_input.phone_number)
-        accounting_user.save()
+        accounting_user = models.User.objects.create(
+            user=django_user, 
+            birthday=register_input.birthday, 
+            phone_number=register_input.phone_number
+        )
         
         new_user = User(
             id=accounting_user.id,
