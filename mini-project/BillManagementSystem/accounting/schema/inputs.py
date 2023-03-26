@@ -5,7 +5,7 @@ from .. import models
 import decimal
 from datetime import date 
     
-@strawberry.input
+@strawberry.django.input(models.User)
 class RegisterInput:
     username: str
     first_name: str

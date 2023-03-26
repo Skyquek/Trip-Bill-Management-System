@@ -6,7 +6,7 @@ from strawberry_django import mutations
 from .. import models
 from django.contrib.auth.tokens import default_token_generator
 
-from .types import IndividualSpending, Bill, Category, User, get_user_all_details, AuthResponse
+from .types import IndividualSpending, Bill, Category, User, AuthResponse
 from .filters import UserFilter, BillFilter, IndividualSpendingFilter, CategoryFilter
 
 @strawberry.type
@@ -57,6 +57,7 @@ class Mutation:
         return AuthResponse(success=True, token=token, user=new_user)
     
     # create
+    # createUser: User = mutations.create(RegisterInput)
     createCategory: Category = mutations.create(CategoryInput)
     createBill: Bill = mutations.create(BillInput)
     createIndividualSpending: IndividualSpending = mutations.create(IndividualSpendingInput)
