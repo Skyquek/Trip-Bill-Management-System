@@ -48,5 +48,29 @@ class BillFilter:
     
     def filter_amount_lte(self, queryset):
         return queryset.filter(amount__lte=self.amount_lte)
+
+@strawberry.django.filters.filter(models.IndividualSpending)
+class IndividualSpendingFilter:
+    id: ID
+    title: auto
+    note: auto
+    amount: decimal.Decimal
+    amount_gte: decimal.Decimal
+    amount_lte: decimal.Decimal
+    user: int
+    bill: "BillFilter"
     
+    def filter_title(self, queryset):
+        return queryset.filter(title__icontains=self.title)
     
+    def filter_note(self, queryset):
+        return queryset.filter(note__icontains=self.note)
+    
+    def filter_amount(self, queryset):
+        return queryset.filter(amount__exact=self.amount)
+    
+    def filter_amount_gte(self, queryset):
+        return queryset.filter(amount__gte=self.amount_gte)
+    
+    def filter_amount_lte(self, queryset):
+        return queryset.filter(amount__lte=self.amount_lte)

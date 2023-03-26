@@ -12,7 +12,7 @@ from datetime import date
 from django.db.models import F
 
 from .types import IndividualSpending, Bill, Category, User, IndividualSpendingResponse, get_user_all_details, CategoryResponse, AuthResponse, UserResponse, UserOutput
-from .filters import UserFilter, BillFilter
+from .filters import UserFilter, BillFilter, IndividualSpendingFilter
 
 # Category
 def get_all_categories(root) -> List[Category]:
@@ -103,6 +103,9 @@ class Query:
 
     bills: List[Bill] = strawberry.django.field()
     bill: List[Bill] = strawberry.django.field(filters=BillFilter)
+    
+    individualSpendings: List[IndividualSpending] = strawberry.django.field()
+    individualSpending: List[IndividualSpending] = strawberry.django.field(filters=IndividualSpendingFilter)
     
 
 @strawberry.type

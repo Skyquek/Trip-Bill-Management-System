@@ -5,13 +5,14 @@ from typing import List, Union
 from datetime import date
 from .. import models
 from django.contrib.auth.models import User as DJangoUser
+import decimal
     
 @strawberry.django.type(models.IndividualSpending)
 class IndividualSpending:
     id: auto
     bill: "Bill"
-    user: "User"
-    amount: str
+    user: "UserOutput"
+    amount: decimal.Decimal
     note: auto
     title: auto
     

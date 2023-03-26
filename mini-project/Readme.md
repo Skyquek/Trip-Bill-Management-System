@@ -88,7 +88,7 @@ Read:
 - [x] Category
 - [x] User
 - [x] Bill
-- [] Individual Spending
+- [x] Individual Spending
 
 Update:
 
