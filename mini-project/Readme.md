@@ -86,20 +86,20 @@ Create:
 Read:
 
 - [x] Category
-- [x] User
+- [] User
 - [x] Bill
 - [x] Individual Spending
 
 Update:
 
-- [] Category
+- [x] Category
 - [] User
-- [] Bill
-- [] Individual Spending
+- [x] Bill
+- [x] Individual Spending
 
 Delete:
 
-- [] Category
+- [x] Category
 - [] User
-- [] Bill
-- [] Individual Spending
+- [x] Bill
+- [x] Individual Spending
