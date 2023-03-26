@@ -86,8 +86,8 @@ Create:
 Read:
 
 - [x] Category
-- [] User
-- [] Bill
+- [x] User
+- [x] Bill
 - [] Individual Spending
 
 Update:

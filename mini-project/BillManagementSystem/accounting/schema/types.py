@@ -15,14 +15,15 @@ class IndividualSpending:
     note: auto
     title: auto
     
-@strawberry.type
+@strawberry.django.type(models.Bill)
 class Bill:
     id: int
-    user: "User"
     title: str
-    category: "Category"
-    amount: str
     note: str
+    amount: str
+    category: "Category"
+    user: "UserOutput"
+
     
 @strawberry.type
 class Category:
@@ -48,7 +49,7 @@ class UserOutput:
     username: str
     birthday: date
     phone_number: str
-
+    
     @strawberry.field
     def first_name(self) -> str:
         return self.user.first_name
@@ -56,6 +57,10 @@ class UserOutput:
     @strawberry.field
     def last_name(self) -> str:
         return self.user.last_name
+    
+    @strawberry.field
+    def email(self) -> str:
+        return self.user.email
     
     @strawberry.field
     def bills(self) -> List[Bill]:
