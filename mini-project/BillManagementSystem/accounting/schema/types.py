@@ -1,17 +1,18 @@
 import strawberry
-from strawberry import auto
+from strawberry import auto, ID
 import strawberry_django
 from typing import List, Union
 from datetime import date
 from .. import models
 from django.contrib.auth.models import User as DJangoUser
 import decimal
+from strawberry_django_plus import gql
     
 @strawberry.django.type(models.IndividualSpending)
 class IndividualSpending:
     id: auto
     bill: "Bill"
-    user: "UserOutput"
+    user: "User"
     amount: decimal.Decimal
     note: auto
     title: auto
@@ -23,7 +24,7 @@ class Bill:
     note: str
     amount: str
     category: "Category"
-    user: "UserOutput"
+    user: "User"
 
     
 @strawberry.django.type(models.Category)
@@ -32,20 +33,8 @@ class Category:
     name: str
     bills: List[Bill]
     
-@strawberry.type
-class User:
-    id: int
-    username: str
-    first_name: str
-    last_name: str
-    email: str
-    birthday: date
-    phone_number: str
-    bills: Union[List[Bill], None]
-    individual_spendings: Union[List[Bill], None]
-    
 @strawberry.django.type(models.User)
-class UserOutput:
+class User:
     id: strawberry.ID
     username: str
     birthday: date
@@ -70,19 +59,6 @@ class UserOutput:
     @strawberry.field
     def individual_spendings(self) -> List[IndividualSpending]:
         return models.IndividualSpending.objects.filter(user=self.id)
-        
-    
-@strawberry.type
-class IndividualSpendingResponse:
-    success: bool
-    individual_spending: Union[IndividualSpending, None]
-    error: str = ""
-
-@strawberry.type
-class BillResponse:
-    success: bool
-    bill: Union[Bill, None]
-    error: str = ""
     
 @strawberry.type
 class AuthResponse:
@@ -90,17 +66,6 @@ class AuthResponse:
     token: str = ""
     user: Union[User, None]
     error: str = ""
-    
-@strawberry.type
-class CategoryResponse:
-    success: bool
-    category: Union[Category, None]
-    error: str = ""
-    
-@strawberry.type
-class UserResponse:
-    success: bool
-    user: User | None | List[User]
     
 def get_user_all_details(user_id: int):
     user = models.User.objects.select_related("user").filter(id=2).values(
