@@ -1,70 +1,78 @@
-## Creating a new django project
+# Bill Management System (BMS)
 
-```python
-$ django-admin startproject mysite
+Say goodbye to the hassle of calculating and dividing bills manually during your trip with friends. Our bill management system simplifies the process, allowing you to easily input expenses and allocate costs between group members. The program calculates each person's share and keeps track of who owes what, while also monitoring spending throughout the trip. With our system, you can enjoy your trip worry-free and avoid any confusion or disagreements about shared expenses.
+
+## Problems:
+
+This project originated from a problem I faced while on vacation with friends. During one of my recent trips, we encountered difficulties in keeping track of who paid for which bills, resulting in confusion and uneven expenses where some individuals paid for certain items while others paid for others.
+
+### Example
+
+Ali, Ah Chong, and Mei Mei went on a vacation in Kuala Lumpur. For breakfast, Ali spent RM 10, Ah Chong spent RM 14, and Mei Mei spent RM 6. Mei Mei helped pay for the bill, which came to a total of RM 30.
+
+Later that night, they had dinner at a fancy restaurant. Ali's meal cost RM 35, Ah Chong's cost RM 30, and Mei Mei's cost RM 100. Ali paid for the bill, which came to a total of RM 165.
+
+When they settled the bills, Ali didn't owe anything. Ah Chong owed Mei Mei RM 14 and Ali RM 30. Mei Mei owed Ali RM 90 (RM 100 minus the RM 10 she contributed to the breakfast bill).
+
+## Solution:
+
+The BMS system resolved the issue by displaying to each user the amount owed to or by other participants for the entirety of the trip.
+
+## Home Bill Management System
+
+```mermaid
+flowchart LR
+    id1[[Login]] --> id2[[Add Payment]]
+    --> id3[/Input bills/] --> id4[/Add Note/]
+    --> id5[/Input payer name/] --> id6[/Input individual cost/]
+    --> id7[[Click View Debt]] --> id8[/Display Debt Summary/]
+``` 
+
+### ERD
+
+```mermaid
+erDiagram
+    user ||--o{ bill : pay
+    user {
+        int id PK
+        string username
+        string password
+        string name
+        date birthdate
+        string email
+        string phone_number
+    }
+
+    bill }o--|| category: "has"
+    bill {
+        int id PK
+        string category FK "Category of Spending"
+        int user_id FK "Which user pay for this?"
+        varchar title
+        decimal amount
+        string note
+        datetime created
+        datetime modified
+    }
+
+    individual_spending }|--|| bill: "has"
+    individual_spending {
+        int id PK
+        int bill_id FK
+        int user_id FK
+        decimal amount "Amount of each user spending"
+        datetime created
+        datetime modified
+    }
+
+    category {
+        int id PK
+        string name
+    }
 ```
 
-## Start the server
+Note: 
 
-```python
-$ python manage.py runserver
 ```
-
-## Django Models
-
-To create a new table:
-
-1) Create a new class in models.py (Note: 1 app can have many table)
-2) Specify relations, fields (Data Type)
-3) python manage.py makemigrations [app_name]
-4) python manage.py migrate --plan
-5) python manage.py migrate
-
-Voila! Your new column new added!
-
-When jango run, it will run `settings.py` first.
-
-(January - May 2023)
-1. Complete 7 basic tutorials
-2. Django Rest framework [https://www.django-rest-framework.org/tutorial/quickstart/](https://www.django-rest-framework.org/tutorial/quickstart/)
-3. Graphin Framework Django 3.2 [https://docs.graphene-python.org/projects/django/en/latest/](https://docs.graphene-python.org/projects/django/en/latest/)
-4. GraphQL
-
-(June 2023)
-5. Mini Project
-
-(October 2023)
-6. Portfolio Project 
-
-Voila, graduate from DJango. 
-
-
-
-
-
-
-# Idea Bucket
-1. Bill Splitter
-
-
-Command to check what file will get affected by migration.
-```python
-python manage.py migrate --plan
+Tax = (bill_amount - SUM(individual_spending)) / len(individual_spending)
 ```
-
-
-
-
-
-## References: 
-- How to commit docker images after changes
-
-```cmd
-$ sudo docker ps -a
-$ sudo docker commit [CONTAINER_ID] [new_image_name]
-```
-
-
-
-
-https://phoenixnap.com/kb/how-to-commit-changes-to-docker-image
