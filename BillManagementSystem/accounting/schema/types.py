@@ -6,11 +6,10 @@ from datetime import date
 from .. import models
 from django.contrib.auth.models import User as DJangoUser
 import decimal
-from strawberry_django_plus import gql
 
 
 @strawberry.django.type(models.IndividualSpending)
-class IndividualSpending:
+class IndividualSpendingScalar:
     id: ID
     user: "User"
     amount: decimal.Decimal
@@ -29,7 +28,7 @@ class Bill:
     user: "User"
 
     @strawberry.field
-    def individual_spendings(self) -> List[IndividualSpending]:
+    def individual_spendings(self) -> List[IndividualSpendingScalar]:
         return models.IndividualSpending.objects.filter(bill_id=self.id)
 
 
@@ -53,14 +52,15 @@ class User:
     id: strawberry.ID
     birthday: date
     phone_number: str
-    django_user: DJangoUser
+    # Issue: https://github.com/strawberry-graphql/strawberry-graphql-django/issues/245
+    django_user: DJangoUser = strawberry_django.field(field_name="user") 
 
     @strawberry.field
     def bills(self) -> List[Bill]:
         return models.Bill.objects.filter(user=self.id)
 
     @strawberry.field
-    def individual_spendings(self) -> List[IndividualSpending]:
+    def individual_spendings(self) -> List[IndividualSpendingScalar]:
         return models.IndividualSpending.objects.filter(user=self.id)
 
 
