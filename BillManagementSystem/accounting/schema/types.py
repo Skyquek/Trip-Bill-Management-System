@@ -11,21 +11,21 @@ import decimal
 @strawberry.django.type(models.IndividualSpending)
 class IndividualSpendingScalar:
     id: ID
-    user: "User"
+    user: "UserScalar"
     amount: decimal.Decimal
     note: auto
     title: auto
-    bill: "Bill"
+    bill: "BillScalar"
 
 
 @strawberry.django.type(models.Bill)
-class Bill:
+class BillScalar:
     id: ID
     title: str
     note: str
     amount: str
-    category: "Category"
-    user: "User"
+    category: "CategoryScalar"
+    user: "UserScalar"
 
     @strawberry.field
     def individual_spendings(self) -> List[IndividualSpendingScalar]:
@@ -33,10 +33,10 @@ class Bill:
 
 
 @strawberry.django.type(models.Category)
-class Category:
+class CategoryScalar:
     id: int
     name: str
-    bills: List[Bill]
+    bills: List[BillScalar]
 
 
 @strawberry.django.type(DJangoUser)
@@ -48,7 +48,7 @@ class DJangoUser:
 
 
 @strawberry.django.type(models.User)
-class User:
+class UserScalar:
     id: strawberry.ID
     birthday: date
     phone_number: str
@@ -56,7 +56,7 @@ class User:
     django_user: DJangoUser = strawberry_django.field(field_name="user") 
 
     @strawberry.field
-    def bills(self) -> List[Bill]:
+    def bills(self) -> List[BillScalar]:
         return models.Bill.objects.filter(user=self.id)
 
     @strawberry.field
@@ -68,7 +68,7 @@ class User:
 class AuthResponse:
     success: bool
     token: str = ""
-    user: Union[User, None]
+    user: Union[UserScalar, None]
     error: str = ""
 
 
@@ -91,7 +91,7 @@ def get_user_all_details(user_id: int):
 
     print(user)
 
-    user = User(
+    user = UserScalar(
         id=user["id"],
         username=user["user__username"],
         first_name=user["user__first_name"],
