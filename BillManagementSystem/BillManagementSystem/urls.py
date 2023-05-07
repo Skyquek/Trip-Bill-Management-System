@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from strawberry.django.views import GraphQLView
+from accounting.schema.schema import schema
 
 urlpatterns = [
     path("accounts/", include("accounting.urls")),
-    path("admin/", admin.site.urls)
+    path("admin/", admin.site.urls),
+    path('graphql', GraphQLView.as_view(schema=schema)),
 ]
