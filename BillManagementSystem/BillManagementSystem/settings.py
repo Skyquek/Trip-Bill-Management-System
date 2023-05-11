@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from gqlauth.settings_type import GqlAuthSettings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "accounting.apps.AccountingConfig",
     "phonenumber_field",
     "djmoney",
     "django.contrib.admin",
@@ -40,7 +40,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "accounting",
+    "strawberry_django",
+    "gqlauth",
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+AUTH_USER_MODEL = 'accounting.AccountUser'
 
 STRAWBERRY_DJANGO = {
     "FIELD_DESCRIPTION_FROM_HELP_TEXT": True,
@@ -55,6 +63,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'gqlauth.core.middlewares.django_jwt_middleware',
 ]
 
 ROOT_URLCONF = "BillManagementSystem.urls"
@@ -110,6 +120,53 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+from strawberry.annotation import StrawberryAnnotation
+from strawberry.field import StrawberryField
+from typing import (
+    Optional,
+)
+
+email_field = StrawberryField(
+    python_name="email", 
+    default=None, 
+    type_annotation=StrawberryAnnotation(str)
+)
+username_field = StrawberryField(
+    python_name="username", 
+    default=None, 
+    type_annotation=StrawberryAnnotation(str)
+)
+first_name_field = StrawberryField(
+    python_name="first_name",
+    default=None,
+    type_annotation=StrawberryAnnotation(Optional[str]),
+)
+phone_number_field = StrawberryField(
+    python_name="phone_number",
+    default=None,
+    type_annotation=StrawberryAnnotation(Optional[str]),
+)
+user_birthday_field = StrawberryField(
+    python_name="user_birthday",
+    default=None,
+    type_annotation=StrawberryAnnotation(Optional[str]),
+)
+GQL_AUTH = GqlAuthSettings(
+    LOGIN_REQUIRE_CAPTCHA=False,
+    REGISTER_REQUIRE_CAPTCHA=False,
+    REGISTER_MUTATION_FIELDS=(
+        email_field, 
+        username_field, 
+        first_name_field,
+        phone_number_field,
+        user_birthday_field
+    )
+)
 
 
 # Internationalization

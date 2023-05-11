@@ -9,6 +9,8 @@ from django.contrib.auth.tokens import default_token_generator
 from .types import IndividualSpendingScalar, BillScalar, CategoryScalar, UserScalar, AuthResponse
 from .filters import UserFilter, BillFilter, IndividualSpendingFilter, CategoryFilter
 
+from gqlauth.user import arg_mutations as mutationsAuth
+
 @strawberry.type
 class Query:
     categories: List[CategoryScalar] = strawberry.django.field()
@@ -23,41 +25,12 @@ class Query:
     individualSpendings: List[IndividualSpendingScalar] = strawberry.django.field()
     individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(filters=IndividualSpendingFilter)
     
+    
+    
 @strawberry.type
 class Mutation:
-    # createUser: User = mutations.create(RegisterInput)
-    
-    # TODO: How to change this to strawberry style
-    # There is one bug on one to one relationship
-    # https://github.com/strawberry-graphql/strawberry-graphql-django/issues/235     
-    @strawberry.mutation
-    def add_user(self, register_input: RegisterInput) -> AuthResponse:
-        django_user = AdminUser.objects.create_user(
-            username=register_input.username, 
-            email=register_input.email, 
-            password=register_input.password, 
-            first_name=register_input.first_name, 
-            last_name = register_input.last_name
-        )
-
-        accounting_user = models.User.objects.create(
-            user=django_user, 
-            birthday=register_input.birthday, 
-            phone_number=register_input.phone_number
-        )
-        
-        new_user = UserScalar(
-            id=accounting_user.id,
-            birthday=accounting_user.birthday,
-            phone_number=accounting_user.phone_number,
-            django_user = django_user
-        )
-        token = default_token_generator.make_token(django_user)
-        
-        return AuthResponse(success=True, token=token, user=new_user)
     
     # create
-    # createUser: User = mutations.create(RegisterInput)
     createCategory: CategoryScalar = mutations.create(CategoryInput)
     createBill: BillScalar = mutations.create(BillInput)
     createIndividualSpending: IndividualSpendingScalar = mutations.create(IndividualSpendingInput)
@@ -73,6 +46,24 @@ class Mutation:
     deleteCategory: List[CategoryScalar] = mutations.delete(filters=CategoryFilter)
     deleteBill: List[BillScalar] = mutations.delete(filters=BillFilter)
     deleteIndividualSpending: List[IndividualSpendingScalar] = mutations.delete(filters=IndividualSpendingFilter)
+    
+    
+    # User Authentication Mutations
+    register = mutationsAuth.Register.field
+    verify_token = mutationsAuth.VerifyToken.field
+    update_account = mutationsAuth.UpdateAccount.field
+    archive_account = mutationsAuth.ArchiveAccount.field
+    delete_account = mutationsAuth.DeleteAccount.field
+    password_change = mutationsAuth.PasswordChange.field
+    captcha = mutationsAuth.Captcha.field
+    token_auth = mutationsAuth.ObtainJSONWebToken.field
+    verify_account = mutationsAuth.VerifyAccount.field
+    resend_activation_email = mutationsAuth.ResendActivationEmail.field
+    send_password_reset_email = mutationsAuth.SendPasswordResetEmail.field
+    password_reset = mutationsAuth.PasswordReset.field
+    password_set = mutationsAuth.PasswordSet.field
+    refresh_token = mutationsAuth.RefreshToken.field
+    revoke_token = mutationsAuth.RevokeToken.field
     
         
 schema = strawberry.Schema(query=Query, mutation=Mutation)

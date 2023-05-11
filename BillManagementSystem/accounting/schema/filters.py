@@ -4,7 +4,7 @@ from .. import models
 from django.db.models import Q
 import decimal
 
-@strawberry.django.filters.filter(models.User)
+@strawberry.django.filters.filter(models.AccountUser)
 class UserFilter:
     id: ID
     phone_number: str

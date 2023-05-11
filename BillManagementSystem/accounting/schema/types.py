@@ -47,13 +47,13 @@ class DJangoUser:
     email: auto
 
 
-@strawberry.django.type(models.User)
+@strawberry.django.type(models.AccountUser)
 class UserScalar:
     id: strawberry.ID
     birthday: date
     phone_number: str
     # Issue: https://github.com/strawberry-graphql/strawberry-graphql-django/issues/245
-    django_user: DJangoUser = strawberry_django.field(field_name="user") 
+    # django_user: DJangoUser = strawberry_django.field(field_name="user") 
 
     @strawberry.field
     def bills(self) -> List[BillScalar]:
@@ -70,37 +70,3 @@ class AuthResponse:
     token: str = ""
     user: Union[UserScalar, None]
     error: str = ""
-
-
-def get_user_all_details(user_id: int):
-    user = models.User.objects.select_related("user").filter(id=2).values(
-        "id",
-        "user__username",
-        "user__first_name",
-        "user__last_name",
-        "user__email",
-        "birthday",
-        "phone_number",
-    ).get()
-
-    if not user["user__first_name"]:
-        user["user__first_name"] = ""
-
-    if not user["user__last_name"]:
-        user["user__last_name"] = ""
-
-    print(user)
-
-    user = UserScalar(
-        id=user["id"],
-        username=user["user__username"],
-        first_name=user["user__first_name"],
-        last_name=user["user__last_name"],
-        email=user["user__email"],
-        birthday=user["birthday"],
-        phone_number=user["phone_number"],
-        bills=models.Bill.objects.filter(user=user["id"]),
-        individual_spendings=models.IndividualSpending.objects.filter(
-            user=user["id"])
-    )
-    return user
