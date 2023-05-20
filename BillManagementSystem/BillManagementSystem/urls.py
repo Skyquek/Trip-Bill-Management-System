@@ -21,5 +21,5 @@ from accounting.schema.schema import schema
 urlpatterns = [
     path("accounts/", include("accounting.urls")),
     path("admin/", admin.site.urls),
-    path('graphql', GraphQLView.as_view(schema=schema)),
+    path('graphql/', GraphQLView.as_view(schema=schema)),
 ]
