@@ -50,7 +50,7 @@ class DJangoUser:
 @strawberry.django.type(models.AccountUser)
 class UserScalar:
     id: strawberry.ID
-    birthday: date
+    user_birthday: date
     phone_number: str
     # Issue: https://github.com/strawberry-graphql/strawberry-graphql-django/issues/245
     # django_user: DJangoUser = strawberry_django.field(field_name="user") 
