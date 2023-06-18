@@ -1,12 +1,8 @@
 # Bill Management System (BMS)
 
-Say goodbye to the hassle of calculating and dividing bills manually during your trip with friends. Our bill management system simplifies the process, allowing you to easily input expenses and allocate costs between group members. The program calculates each person's share and keeps track of who owes what, while also monitoring spending throughout the trip. With our system, you can enjoy your trip worry-free and avoid any confusion or disagreements about shared expenses.
-
-## Problems:
-
 This project originated from a problem I faced while on vacation with friends. During one of my recent trips, we encountered difficulties in keeping track of who paid for which bills, resulting in confusion and uneven expenses where some individuals paid for certain items while others paid for others.
 
-### Example
+## Problems:
 
 Ali, Ah Chong, and Mei Mei went on a vacation in Kuala Lumpur. For breakfast, Ali spent RM 10, Ah Chong spent RM 14, and Mei Mei spent RM 6. Mei Mei helped pay for the bill, which came to a total of RM 30.
 
@@ -76,3 +72,34 @@ Note:
 ```
 Tax = (bill_amount - SUM(individual_spending)) / len(individual_spending)
 ```
+
+
+TODO LIST:
+
+Create:
+
+- [x] Category
+- [x] User
+- [x] Bill
+- [x] Individual Spending
+
+Read:
+
+- [x] Category
+- [] User
+- [x] Bill
+- [x] Individual Spending
+
+Update:
+
+- [x] Category
+- [] User
+- [x] Bill
+- [x] Individual Spending
+
+Delete:
+
+- [x] Category
+- [] User
+- [x] Bill
+- [x] Individual Spending

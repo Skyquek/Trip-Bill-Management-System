@@ -1,0 +1,18 @@
+[
+    {
+        "model": "accounting.AccountUser",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$180000$nFcBtiqGnWN9$hf58wNg77oT1BlNKRdATVVvBIa69+dz22fL1JKOKTaA=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "user1",
+            "first_name": "",
+            "last_name": "",
+            "email": "user1@email.com",
+            "is_staff": false,
+            "is_active": true,
+            "birthday": "1997-08-18"
+        }
+    }
+]
