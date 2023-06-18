@@ -4,7 +4,7 @@ import strawberry_django
 from typing import List, Union
 from datetime import date
 from .. import models
-from django.contrib.auth.models import User as DJangoUser
+from django.contrib.auth.models import User as DjangoUser
 import decimal
 
 
@@ -39,8 +39,8 @@ class CategoryScalar:
     bills: List[BillScalar]
 
 
-@strawberry.django.type(DJangoUser)
-class DJangoUser:
+@strawberry.django.type(DjangoUser)
+class DjangoUser:
     username: auto
     first_name: auto
     last_name: auto
@@ -53,7 +53,7 @@ class UserScalar:
     user_birthday: date
     phone_number: str
     # Issue: https://github.com/strawberry-graphql/strawberry-graphql-django/issues/245
-    # django_user: DJangoUser = strawberry_django.field(field_name="user") 
+    # django_user: DjangoUser = strawberry_django.field(field_name="user") 
 
     @strawberry.field
     def bills(self) -> List[BillScalar]:
