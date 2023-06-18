@@ -28,8 +28,8 @@ class CategoryPartialInput(CategoryInput):
 @strawberry.django.input(models.Bill)
 class BillInput:
     title: str
-    category_id: int # How to make this optional
-    user_id: int # How to make this optional
+    category_id: Optional[int]
+    user_id: Optional[int]
     amount: decimal.Decimal
     note: str
     
