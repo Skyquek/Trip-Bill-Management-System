@@ -13,16 +13,13 @@ from gqlauth.user import arg_mutations as mutationsAuth
 
 @strawberry.type
 class Query:
-    categories: List[CategoryScalar] = strawberry.django.field()
     category: List[CategoryScalar] = strawberry.django.field(filters=CategoryFilter)
     
+    # Will need to update this, since already change to strawberry auth
     users: List[UserScalar] = strawberry.django.field()
     user: List[UserScalar] = strawberry.django.field(filters=UserFilter)
 
-    bills: List[BillScalar] = strawberry.django.field()
     bill: List[BillScalar] = strawberry.django.field(filters=BillFilter)
-    
-    individualSpendings: List[IndividualSpendingScalar] = strawberry.django.field()
     individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(filters=IndividualSpendingFilter)
     
     
