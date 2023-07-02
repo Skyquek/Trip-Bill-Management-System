@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const { Option } = Select;
 
-export default function BillForm() {
+export default function AddBill() {
   const [categories, setCategories] = useState<{id: string; name: string}[]>([]);
   useEffect(() => {
     fetchCategories();

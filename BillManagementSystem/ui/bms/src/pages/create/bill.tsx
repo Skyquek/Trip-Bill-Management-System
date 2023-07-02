@@ -1,7 +1,8 @@
-import Sidebar from "./sidebar";
-import Appbar from "./appbar";
-import BillForm from "./Forms/billForm";
+import Sidebar from "../sidebar";
+import Appbar from "../appbar";
+import AddBill from "../../components/Forms/add_bill";
 import { Breadcrumb, Layout, Menu, theme, Space } from "antd";
+import React from "react";
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -34,7 +35,7 @@ const headerStyle: React.CSSProperties = {
     backgroundColor: '#7dbcea',
   };
 
-export default function index() {
+export default function bill() {
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -50,7 +51,7 @@ export default function index() {
                         <Sidebar></Sidebar>
                     </Sider>
                     <Content style={contentStyle}>
-                        <BillForm></BillForm>
+                        <AddBill></AddBill>
                     </Content>
                 </Layout>
                 <Footer style={footerStyle}>Footer</Footer>
