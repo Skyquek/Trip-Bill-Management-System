@@ -1,96 +1,142 @@
-import React from 'react';
-import { Button, Checkbox, Form, Input, InputNumber, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Input, InputNumber, Select } from 'antd';
 import type { FormInstance } from 'antd/es/form';
+import axios from 'axios';
 
 const { Option } = Select;
 
-const BillForm: React.FC = () => {
-  const formRef = React.useRef<FormInstance>(null);
+export default function BillForm() {
+  const [categories, setCategories] = useState<{id: string; name: string}[]>([]);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-  const onCategoryChange = (value: string) => {
-    switch (value) {
-      case 'male':
-        formRef.current?.setFieldsValue({ note: 'Hi, man!' });
-        break;
-      case 'female':
-        formRef.current?.setFieldsValue({ note: 'Hi, lady!' });
-        break;
-      case 'other':
-        formRef.current?.setFieldsValue({ note: 'Hi there!' });
-        break;
-      default:
-        break;
+  const fetchCategories = () => {
+    axios.post('http://127.0.0.1:8000/graphql/', {
+      query: `
+        query {
+          category {
+            id
+            name
+          }
+        }
+      `,
+    })
+    .then((response) => {
+      const categoryData = response.data.data.category;
+      
+      // We want to perform side effect here
+      setCategories(categoryData);
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+  }
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onFinish = async (values: any) => {
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/graphql/', {
+        query: `
+          mutation {
+            createBill(data: {
+              title: "${values.title}",
+              categoryId: 3,
+              userId: 1,
+              amount: ${values.amount},
+              note: "${values.note}"
+            }) {
+              id
+              title
+              category {
+                id
+                name
+              }
+              amount
+              note
+              individualSpendings {
+                id
+                title
+                user {
+                  id
+                  userBirthday
+                }
+              }
+            }
+          }
+        `,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(response.data); 
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const onFinish = (values: any) => {
-    console.log(values);
-  };
-
-  const onReset = () => {
-    formRef.current?.resetFields();
-  };
-
-  const onFill = () => {
-    formRef.current?.setFieldsValue({ note: 'Hello world!', gender: 'male' });
-  };
-
   return (
-  <Form
-    name="basic"
-    labelCol={{ span: 8 }}
-    wrapperCol={{ span: 16 }}
-    style={{ maxWidth: 600 }}
-    initialValues={{ remember: true }}
-    autoComplete="off"
-  >
-    <Form.Item
-      label="Title"
-      name="title"
-      rules={[{ required: true, message: 'Please input title for your bill!' }]}
+    <Form
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      style={{ maxWidth: 600 }}
+      initialValues={{ remember: true }}
+      autoComplete="off"
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
     >
-      <Input />
-    </Form.Item>
-
-    <Form.Item
-      label="Category"
-      name="category"
-      rules={[{ required: true, message: 'What is the category for this bills?' }]}
-    >
-      <Select
-        placeholder="Select a option and change input text above"
-        onChange={onCategoryChange}
-        allowClear
+      <Form.Item
+        label="Title"
+        name="title"
+        rules={[{ required: true, message: 'Please input title for your bill!' }]}
       >
-        <Option value="male">Food</Option>
-        <Option value="female">Parking</Option>
-        <Option value="other">Commute</Option>
-      </Select>
-    </Form.Item>
+        <Input />
+      </Form.Item>
 
-    <Form.Item
-    label="Amount"
-    name="amount"
-    rules={[{ required: true, message: 'What is the amount for this bills?' }]}
-    >
-     <InputNumber /> 
-    </Form.Item>
+      <Form.Item
+        label="Category"
+        name="category"
+        rules={[{ required: true, message: 'What is the category for this bill?' }]}
+      >
+        <Select
+          placeholder="Select bill category here!"
+          allowClear
+        >
+          {categories.map((category) => (
+            <Option key={category.id} value={category.id}>
+              {category.name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
 
-    <Form.Item
+      <Form.Item
+        label="Amount"
+        name="amount"
+        rules={[{ required: true, message: 'What is the amount for this bill?' }]}
+      >
+        <InputNumber />
+      </Form.Item>
+
+      <Form.Item
         name="note"
-        label="note"
+        label="Note"
         rules={[{ required: false, message: 'Any note?' }]}
       >
         <Input.TextArea showCount maxLength={100} />
       </Form.Item>
 
-    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
-    </Form.Item>
-  </Form>
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
-
-export default BillForm;
