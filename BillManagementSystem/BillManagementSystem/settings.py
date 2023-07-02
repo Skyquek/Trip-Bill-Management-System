@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders", # Temporary to make the cors pass
     "phonenumber_field",
     "djmoney",
     "django.contrib.admin",
@@ -43,6 +44,20 @@ INSTALLED_APPS = [
     "accounting",
     "strawberry_django",
     "gqlauth",
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',  # Add your frontend domain and port
+    # Other allowed origins
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -65,6 +80,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'gqlauth.core.middlewares.django_jwt_middleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = "BillManagementSystem.urls"
