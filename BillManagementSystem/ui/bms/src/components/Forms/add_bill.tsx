@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, InputNumber, Select } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import axios from 'axios';
+import { gql } from '@apollo/client';
+import client from "../../apollo-client";
 
 const { Option } = Select;
 
@@ -11,26 +13,19 @@ export default function AddBill() {
     fetchCategories();
   }, []);
 
-  const fetchCategories = () => {
-    axios.post('http://127.0.0.1:8000/graphql/', {
-      query: `
-        query {
+  async function fetchCategories() {
+    const { data } = await client.query({
+      query: gql`
+      query {
           category {
             id
             name
           }
         }
       `,
-    })
-    .then((response) => {
-      const categoryData = response.data.data.category;
-      
-      // We want to perform side effect here
-      setCategories(categoryData);
-    })
-    .catch((error) => {
-      console.error(error);
-    })
+    });
+
+    setCategories(data.category);
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -38,47 +33,39 @@ export default function AddBill() {
   };
 
   const onFinish = async (values: any) => {
-
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/graphql/', {
-        query: `
-          mutation {
-            createBill(data: {
-              title: "${values.title}",
-              categoryId: 3,
-              userId: 1,
-              amount: ${values.amount},
-              note: "${values.note}"
-            }) {
+    const response = await client.mutate({
+      mutation: gql`
+      mutation {
+        createBill(data: {
+          title: "${values.title}",
+          categoryId: 3,
+          userId: 1,
+          amount: ${values.amount},
+          note: "${values.note}"
+        }) {
+          id
+          title
+          category {
+            id
+            name
+          }
+          amount
+          note
+          individualSpendings {
+            id
+            title
+            user {
               id
-              title
-              category {
-                id
-                name
-              }
-              amount
-              note
-              individualSpendings {
-                id
-                title
-                user {
-                  id
-                  userBirthday
-                }
-              }
+              userBirthday
             }
           }
-        `,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
         }
-      });
-      console.log(response.data); 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      }
+      `
+    });
+
+    console.log('pass');
+};
 
   return (
     <Form

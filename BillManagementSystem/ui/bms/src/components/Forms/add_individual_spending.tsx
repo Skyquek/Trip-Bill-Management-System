@@ -3,50 +3,48 @@ import { Button, Form, Input, InputNumber, Select } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import axios from 'axios';
 
+import { gql } from '@apollo/client';
+import client from "../../apollo-client";
+
 const { Option } = Select;
 
 export default function AddIndividualSpending() {
-  const [bills, setBills] = useState<any>([]);
+  const [bills, setBills] = useState<{id: string, title: string, amount: string}[]>([]);
   useEffect(() => {
     fetchBills();
   }, []);
 
-  const fetchBills = () => {
-    axios.post('http://127.0.0.1:8000/graphql/', {
-        query: `
-            query {
-                bill {
+  const fetchBills = async () => {
+
+    const { data } = await client.query({
+      query: gql`
+      query {
+        bill {
+            id
+            title
+            note
+            amount
+            category {
+                id
+                name
+            }
+            user {
+                id
+            }
+            individualSpendings {
+                id
+                note
+                title
+                user {
                     id
-                    title
-                    note
-                    amount
-                    category {
-                        id
-                        name
-                    }
-                    user {
-                        id
-                    }
-                    individualSpendings {
-                        id
-                        note
-                        title
-                        user {
-                            id
-                            userBirthday
-                        }
-                    }
+                    userBirthday
                 }
-          }
-        `,
-    })
-    .then((response) => {
-        const bills = response.data.data.bill;
-        setBills(bills)
-    })
-    .catch((error) => {
-        console.error(error);
+            }
+        }
+      }
+      `,
     });
+    setBills(data.bill);
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -54,17 +52,15 @@ export default function AddIndividualSpending() {
   };
 
   const onFinish = async (values: any) => {
-
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/graphql/', {
-        query: `
+      const response = await client.mutate({
+        mutation: gql`
             mutation {
                 createIndividualSpending(data: {
                     billId: ${values.billId},
                     userId: 1,
                     amount: ${values.amount},
                     note: "${values.note}",
-                    title: "Pork Leg rice lunch"
+                    title: "${values.title}"
                 }) {
                         id
                         bill {
@@ -99,16 +95,10 @@ export default function AddIndividualSpending() {
                 }
             }
         `,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
       });
-      console.log(response.data); 
-    } catch (error) {
-      console.error(error);
+
+      console.log(response);
     }
-  };
 
   return (
     <Form

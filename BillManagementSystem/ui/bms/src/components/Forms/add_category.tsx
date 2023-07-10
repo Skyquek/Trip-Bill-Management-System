@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, InputNumber, Select } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import axios from 'axios';
+import { gql } from '@apollo/client';
+import client from '@/apollo-client';
 
 const { Option } = Select;
 
@@ -13,27 +15,19 @@ export default function AddCategory() {
 
   const onFinish = async (values: any) => {
 
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/graphql/', {
-        query: `
+    const { data } = await client.mutate({
+      mutation: gql`
         mutation {
-            createCategory(data: {
-                  name: "${values.categoryName}"
-              }) {
-                      id
-                      name
-              }
+          createCategory(data: {
+                name: "${values.categoryName}"
+            }) {
+                    id
+                    name
           }
-        `,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
         }
-      });
-      console.log(response.data); 
-    } catch (error) {
-      console.error(error);
-    }
+      `,
+    });
+
   };
 
   return (
