@@ -3,7 +3,9 @@ from strawberry import auto, ID
 from typing import List, Optional
 from .. import models
 import decimal
-from datetime import date 
+from datetime import date
+
+from django.contrib.auth import get_user_model
     
 @strawberry.django.input(models.AccountUser)
 class RegisterInput:
@@ -14,7 +16,11 @@ class RegisterInput:
     password: str
     birthday: date
     phone_number: str
-
+    
+@strawberry.django.input(get_user_model())
+class UserLoginInput:
+    username: auto
+    password: auto
     
 @strawberry.django.input(models.Category)
 class CategoryInput:

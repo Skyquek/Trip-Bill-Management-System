@@ -175,6 +175,7 @@ user_birthday_field = StrawberryField(
 GQL_AUTH = GqlAuthSettings(
     LOGIN_REQUIRE_CAPTCHA=False,
     REGISTER_REQUIRE_CAPTCHA=False,
+    ALLOW_LOGIN_NOT_VERIFIED=True,
     REGISTER_MUTATION_FIELDS=(
         email_field, 
         username_field, 

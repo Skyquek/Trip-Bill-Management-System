@@ -41,13 +41,9 @@ class CategoryScalar:
 
 @strawberry.django.type(get_user_model())
 class UserAuth:
+    id: ID
     username: auto
     email: auto
-
-@strawberry.django.input(get_user_model())
-class UserLoginInput:
-    username: auto
-    password: auto
 
 @strawberry.django.type(DjangoUser)
 class DjangoUser:
