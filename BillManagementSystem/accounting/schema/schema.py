@@ -10,22 +10,30 @@ from .types import IndividualSpendingScalar, BillScalar, CategoryScalar, UserSca
 from .filters import UserFilter, BillFilter, IndividualSpendingFilter, CategoryFilter
 
 from gqlauth.user import arg_mutations as mutationsAuth
+from gqlauth.user.queries import UserQueries
+
+from strawberry.django import auth
+from .types import UserAuth, UserLoginInput
 
 @strawberry.type
-class Query:
+class Query(UserQueries):
+    me: UserAuth = auth.current_user()
+    
     category: List[CategoryScalar] = strawberry.django.field(filters=CategoryFilter)
     
-    # Will need to update this, since already change to strawberry auth
+    # will need to update this, since already change to strawberry auth
     users: List[UserScalar] = strawberry.django.field()
     user: List[UserScalar] = strawberry.django.field(filters=UserFilter)
 
     bill: List[BillScalar] = strawberry.django.field(filters=BillFilter)
     individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(filters=IndividualSpendingFilter)
     
-    
-    
 @strawberry.type
 class Mutation:
+    # User Login
+    login: UserAuth = auth.login()
+    logout = auth.logout()
+    register: UserAuth = auth.register(UserLoginInput)
     
     # create
     createCategory: CategoryScalar = mutations.create(CategoryInput)
