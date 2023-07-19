@@ -1,29 +1,35 @@
 import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import client from "../../apollo-client";
-import { gql } from '@apollo/client';
+import { signIn } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const App: React.FC = () => {
-  const onFinish = async (values: any) => {
-    console.log(values);
-    const { data } = await client.mutate({
-        mutation: gql`
-        mutation {
-            login(username: "${values.username}", password: "${values.password}") {
-                id
-                username
-                email
-            }
-        }
-        `,
-    });
-    console.log(data.login);
+  const {data: session, status} = useSession();
 
-    return data.login;
+  console.log(session);
+  console.log(status);
+
+  const onFinish = async (values: any) => {
+    // console.log(values);
+
+    // use nextAuth API
+    const result = await signIn('credentials', { 
+      redirect: false,
+      username: values.username,
+      password: values.password,
+    });
+
+    console.log(result);
+
+    if (session !== undefined || null) {
+      redirect('/');
+    }
+
   };
 
-  return (
+  return (  
     <Form
       name="normal_login"
       className="login-form"
