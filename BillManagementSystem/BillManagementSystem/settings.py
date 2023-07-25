@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from gqlauth.settings_type import GqlAuthSettings
+from .strawberry_auth import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders", # Temporary to make the cors pass
     "phonenumber_field",
     "djmoney",
     "django.contrib.admin",
@@ -43,6 +45,20 @@ INSTALLED_APPS = [
     "accounting",
     "strawberry_django",
     "gqlauth",
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',  # Add your frontend domain and port
+    # Other allowed origins
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -65,6 +81,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'gqlauth.core.middlewares.django_jwt_middleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = "BillManagementSystem.urls"
@@ -125,48 +142,21 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-from strawberry.annotation import StrawberryAnnotation
-from strawberry.field import StrawberryField
-from typing import (
-    Optional,
-)
 
-email_field = StrawberryField(
-    python_name="email", 
-    default=None, 
-    type_annotation=StrawberryAnnotation(str)
-)
-username_field = StrawberryField(
-    python_name="username", 
-    default=None, 
-    type_annotation=StrawberryAnnotation(str)
-)
-first_name_field = StrawberryField(
-    python_name="first_name",
-    default=None,
-    type_annotation=StrawberryAnnotation(Optional[str]),
-)
-phone_number_field = StrawberryField(
-    python_name="phone_number",
-    default=None,
-    type_annotation=StrawberryAnnotation(Optional[str]),
-)
-user_birthday_field = StrawberryField(
-    python_name="user_birthday",
-    default=None,
-    type_annotation=StrawberryAnnotation(Optional[str]),
-)
 GQL_AUTH = GqlAuthSettings(
     LOGIN_REQUIRE_CAPTCHA=False,
     REGISTER_REQUIRE_CAPTCHA=False,
+    ALLOW_LOGIN_NOT_VERIFIED=True,
     REGISTER_MUTATION_FIELDS=(
         email_field, 
         username_field, 
-        first_name_field,
-        phone_number_field,
-        user_birthday_field
+        first_name_field, 
+        phone_number_field, 
+        user_birthday_field,
+        userid_field
     )
 )
+
 
 
 # Internationalization

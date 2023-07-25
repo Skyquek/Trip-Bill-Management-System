@@ -3,6 +3,7 @@ from strawberry import auto, ID
 from .. import models
 from django.db.models import Q
 import decimal
+from typing import Optional
 
 @strawberry.django.filters.filter(models.AccountUser)
 class UserFilter:
@@ -25,14 +26,14 @@ class UserFilter:
     
 @strawberry.django.filters.filter(models.Bill)
 class BillFilter:
-    id: ID
+    id: Optional[ID]
     title: auto
     note: auto
-    amount: decimal.Decimal
-    amount_gte: decimal.Decimal
-    amount_lte: decimal.Decimal
-    category: int
-    user: int
+    amount: Optional[decimal.Decimal]
+    amount_gte: Optional[decimal.Decimal]
+    amount_lte: Optional[decimal.Decimal]
+    category: Optional[int]
+    user: Optional[int]
     
     def filter_title(self, queryset):
         return queryset.filter(title__icontains=self.title)
@@ -54,11 +55,11 @@ class IndividualSpendingFilter:
     id: ID
     title: auto
     note: auto
-    amount: decimal.Decimal
-    amount_gte: decimal.Decimal
-    amount_lte: decimal.Decimal
-    user: int
-    bill: "BillFilter"
+    amount: Optional[decimal.Decimal]
+    amount_gte: Optional[decimal.Decimal]
+    amount_lte: Optional[decimal.Decimal]
+    user: auto
+    bill: Optional["BillFilter"]
     
     def filter_title(self, queryset):
         return queryset.filter(title__icontains=self.title)
