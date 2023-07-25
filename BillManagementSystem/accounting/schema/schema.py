@@ -27,7 +27,7 @@ from strawberry_django.permissions import (
 from gqlauth.core.utils import get_user
 
 
-class QuekPerm(DjangoPermissionExtension):
+class AuthRequired(DjangoPermissionExtension):
     def resolve_for_user(self, _, info, **kwargs):
         user = get_user(info)
         print(user)
@@ -46,12 +46,8 @@ class Query(UserQueries):
     # for admin used to track how many users in the system and etc.
     users: List[UserScalar] = strawberry.django.field()
     user: List[UserScalar] = strawberry.django.field(filters=UserFilter)
-
-    # Get bill by user id? How to do this?
     bill: List[BillScalar] = strawberry.django.field(filters=BillFilter)
-
-    individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(
-        filters=IndividualSpendingFilter)
+    individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(filters=IndividualSpendingFilter)
 
 
 @strawberry.type
@@ -61,27 +57,21 @@ class Mutation:
     # logout = auth.logout()
     registerUser: UserAuth = auth.register(UserLoginInput)
 
-    # create
-    createCategory: CategoryScalar = mutations.create(CategoryInput)
-    createBill: BillScalar = mutations.create(BillInput, permission_classes=[QuekPerm])
-    createIndividualSpending: IndividualSpendingScalar = mutations.create(
-        IndividualSpendingInput)
+    # create 
+    createCategory: CategoryScalar = mutations.create(CategoryInput, permission_classes=[AuthRequired])
+    createBill: BillScalar = mutations.create(BillInput, permission_classes=[AuthRequired])
+    createIndividualSpending: IndividualSpendingScalar = mutations.create(IndividualSpendingInput, permission_classes=[AuthRequired])
 
     # update
-    updateCategory: List[CategoryScalar] = mutations.update(
-        CategoryPartialInput, filters=CategoryFilter)
-    updateBill: List[BillScalar] = mutations.update(
-        BillPartialInput, filters=BillFilter)
-    updateIndividualSpending: List[IndividualSpendingScalar] = mutations.update(
-        IndividualSpendingPartialInput, filters=IndividualSpendingFilter)
+    updateCategory: List[CategoryScalar] = mutations.update(CategoryPartialInput, filters=CategoryFilter, permission_classes=[AuthRequired])
+    updateBill: List[BillScalar] = mutations.update(BillPartialInput, filters=BillFilter, permission_classes=[AuthRequired])
+    updateIndividualSpending: List[IndividualSpendingScalar] = mutations.update(IndividualSpendingPartialInput, filters=IndividualSpendingFilter, permission_classes=[AuthRequired])
 
     # delete
     # TODO:this is dangerous, they can feed in deletion all without filter
-    deleteCategory: List[CategoryScalar] = mutations.delete(
-        filters=CategoryFilter, permission_classes=[])
-    deleteBill: List[BillScalar] = mutations.delete(filters=BillFilter)
-    deleteIndividualSpending: List[IndividualSpendingScalar] = mutations.delete(
-        filters=IndividualSpendingFilter)
+    deleteCategory: List[CategoryScalar] = mutations.delete(filters=CategoryFilter, permission_classes=[AuthRequired])
+    deleteBill: List[BillScalar] = mutations.delete(filters=BillFilter, permission_classes=[AuthRequired])
+    deleteIndividualSpending: List[IndividualSpendingScalar] = mutations.delete(filters=IndividualSpendingFilter, permission_classes=[AuthRequired])
 
     # User Authentication Mutations
     register = mutationsAuth.Register.field
