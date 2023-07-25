@@ -43,24 +43,24 @@ class BillInput:
 class BillPartialInput(BillInput):
     id: ID
     title: auto
-    category_id: int
-    user_id: int
-    amount: decimal.Decimal
+    category_id: auto
+    user_id: auto
+    amount: Optional[decimal.Decimal]
     note: auto
     
 @strawberry.django.input(models.IndividualSpending)
 class IndividualSpendingInput:
-    bill: int
-    user: int
-    amount: decimal.Decimal
-    note: str
-    title: str
+    bill: auto
+    user: auto
+    amount: Optional[decimal.Decimal]
+    note: auto
+    title: auto
 
 @strawberry.django.input(models.IndividualSpending, partial=True)
 class IndividualSpendingPartialInput(IndividualSpendingInput):
     id: ID
-    user: int
-    amount: decimal.Decimal
+    user: auto
+    amount: Optional[decimal.Decimal]
     note: auto
     title: auto
     

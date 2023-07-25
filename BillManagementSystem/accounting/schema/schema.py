@@ -63,9 +63,9 @@ class Mutation:
     createIndividualSpending: IndividualSpendingScalar = mutations.create(IndividualSpendingInput, permission_classes=[AuthRequired])
 
     # update
-    updateCategory: List[CategoryScalar] = mutations.update(CategoryPartialInput, filters=CategoryFilter, permission_classes=[AuthRequired])
-    updateBill: List[BillScalar] = mutations.update(BillPartialInput, filters=BillFilter, permission_classes=[AuthRequired])
-    updateIndividualSpending: List[IndividualSpendingScalar] = mutations.update(IndividualSpendingPartialInput, filters=IndividualSpendingFilter, permission_classes=[AuthRequired])
+    updateCategory: CategoryScalar = mutations.update(CategoryPartialInput, permission_classes=[AuthRequired])
+    updateBill: BillScalar = mutations.update(BillPartialInput, permission_classes=[AuthRequired])
+    updateIndividualSpending: IndividualSpendingScalar = mutations.update(IndividualSpendingPartialInput, permission_classes=[AuthRequired])
 
     # delete
     # TODO:this is dangerous, they can feed in deletion all without filter

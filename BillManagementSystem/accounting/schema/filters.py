@@ -55,11 +55,11 @@ class IndividualSpendingFilter:
     id: ID
     title: auto
     note: auto
-    amount: decimal.Decimal
-    amount_gte: decimal.Decimal
-    amount_lte: decimal.Decimal
-    user: int
-    bill: "BillFilter"
+    amount: Optional[decimal.Decimal]
+    amount_gte: Optional[decimal.Decimal]
+    amount_lte: Optional[decimal.Decimal]
+    user: auto
+    bill: Optional["BillFilter"]
     
     def filter_title(self, queryset):
         return queryset.filter(title__icontains=self.title)
