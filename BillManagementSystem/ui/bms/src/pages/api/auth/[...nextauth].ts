@@ -45,6 +45,7 @@ export const authOptions: NextAuthOptions = {
                   token
                 }
                 user {
+                  id
                   isActive
                   username
                   email
@@ -63,6 +64,7 @@ export const authOptions: NextAuthOptions = {
             const user = {
               "serverRefreshToken": data.tokenAuth.refreshToken.token,
               "isActive": data.tokenAuth.user.isActive,
+              "id": data.tokenAuth.user.id,
               "name": data.tokenAuth.user.username,
               "email": data.tokenAuth.user.email,
               "accessToken": data.tokenAuth.token.token,
@@ -89,6 +91,7 @@ export const authOptions: NextAuthOptions = {
         data.email = user.email;
         data.name = user.name;
         data.accessToken = user.accessToken;
+        data.id = user.id;
 
         return data;
       }
@@ -119,6 +122,7 @@ export const authOptions: NextAuthOptions = {
       if (alteredSession.user != undefined) {
         alteredSession.user.name = token.name;
         alteredSession.user.email = token.email;
+        alteredSession.user.id = token.id;
       }
       
       // This will be returned to the client so be careful what to send here.
