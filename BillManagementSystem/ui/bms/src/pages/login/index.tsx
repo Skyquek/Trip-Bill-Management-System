@@ -12,16 +12,12 @@ const App: React.FC = () => {
   console.log(status);
 
   const onFinish = async (values: any) => {
-    // console.log(values);
-
     // use nextAuth API
     const result = await signIn('credentials', { 
       redirect: false,
       username: values.username,
       password: values.password,
     });
-
-    console.log(result);
 
     if (session !== undefined || null) {
       console.log(session);
@@ -74,7 +70,10 @@ const App: React.FC = () => {
         </Form.Item>
       </Form>
 
-      {status === 'authenticated' ? <Button onClick={logoutHandler}>LogOut</Button> : null}      
+      {
+      status === 'authenticated' ? <Button onClick={logoutHandler}>LogOut</Button> : null
+      // status === 'authenticated' ? window.location.href = '/create/bill' : null
+      }      
     </div>
   );
 };

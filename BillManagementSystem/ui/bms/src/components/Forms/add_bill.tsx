@@ -3,11 +3,14 @@ import { Button, Form, Input, InputNumber, Select } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import axios from 'axios';
 import { gql } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import client from "../../apollo-client";
+import { useSession } from 'next-auth/react';
+import { onFinishFailed } from '@/pages/create/bill';
 
 const { Option } = Select;
 
-export default function AddBill() {
+export default function AddBill({onFinish}) {
   const [categories, setCategories] = useState<{id: string; name: string}[]>([]);
   useEffect(() => {
     fetchCategories();
@@ -28,44 +31,7 @@ export default function AddBill() {
     setCategories(data.category);
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const onFinish = async (values: any) => {
-    const response = await client.mutate({
-      mutation: gql`
-      mutation {
-        createBill(data: {
-          title: "${values.title}",
-          categoryId: 3,
-          userId: 1,
-          amount: ${values.amount},
-          note: "${values.note}"
-        }) {
-          id
-          title
-          category {
-            id
-            name
-          }
-          amount
-          note
-          individualSpendings {
-            id
-            title
-            user {
-              id
-              userBirthday
-            }
-          }
-        }
-      }
-      `
-    });
-
     console.log('pass');
-};
 
   return (
     <Form
