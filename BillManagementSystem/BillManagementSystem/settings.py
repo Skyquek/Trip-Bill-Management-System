@@ -145,8 +145,14 @@ from strawberry.annotation import StrawberryAnnotation
 from strawberry.field import StrawberryField
 from typing import (
     Optional,
+    
 )
 
+userid_field = StrawberryField(
+    python_name="id",
+    default=None,
+    type_annotation=StrawberryAnnotation(int)
+)
 email_field = StrawberryField(
     python_name="email", 
     default=None, 
@@ -179,9 +185,10 @@ GQL_AUTH = GqlAuthSettings(
     REGISTER_MUTATION_FIELDS=(
         email_field, 
         username_field, 
-        first_name_field,
-        phone_number_field,
-        user_birthday_field
+        first_name_field, 
+        phone_number_field, 
+        user_birthday_field,
+        userid_field
     )
 )
 
