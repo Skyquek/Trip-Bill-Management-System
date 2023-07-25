@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from gqlauth.settings_type import GqlAuthSettings
+from .strawberry_auth import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -141,43 +142,7 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-from strawberry.annotation import StrawberryAnnotation
-from strawberry.field import StrawberryField
-from typing import (
-    Optional,
-    
-)
 
-userid_field = StrawberryField(
-    python_name="id",
-    default=None,
-    type_annotation=StrawberryAnnotation(int)
-)
-email_field = StrawberryField(
-    python_name="email", 
-    default=None, 
-    type_annotation=StrawberryAnnotation(str)
-)
-username_field = StrawberryField(
-    python_name="username", 
-    default=None, 
-    type_annotation=StrawberryAnnotation(str)
-)
-first_name_field = StrawberryField(
-    python_name="first_name",
-    default=None,
-    type_annotation=StrawberryAnnotation(Optional[str]),
-)
-phone_number_field = StrawberryField(
-    python_name="phone_number",
-    default=None,
-    type_annotation=StrawberryAnnotation(Optional[str]),
-)
-user_birthday_field = StrawberryField(
-    python_name="user_birthday",
-    default=None,
-    type_annotation=StrawberryAnnotation(Optional[str]),
-)
 GQL_AUTH = GqlAuthSettings(
     LOGIN_REQUIRE_CAPTCHA=False,
     REGISTER_REQUIRE_CAPTCHA=False,
@@ -191,6 +156,7 @@ GQL_AUTH = GqlAuthSettings(
         userid_field
     )
 )
+
 
 
 # Internationalization
