@@ -15,13 +15,33 @@ from gqlauth.user.queries import UserQueries
 from strawberry.django import auth
 from .types import UserAuth
 from .inputs import UserLoginInput
+from gqlauth.core.types_ import GQLAuthError, GQLAuthErrors
+
+from strawberry_django.permissions import (
+    IsAuthenticated,
+    HasPerm,
+    HasRetvalPerm,
+    DjangoPermissionExtension
+)
+
+from gqlauth.core.utils import get_user
+
+
+class QuekPerm(DjangoPermissionExtension):
+    def resolve_for_user(self, _, info, **kwargs):
+        user = get_user(info)
+        print(user)
+        return user.is_authenticated
+
+    has_permission = resolve_for_user
 
 @strawberry.type
 class Query(UserQueries):
     loggedUser: UserAuth = auth.current_user()
-    
-    category: List[CategoryScalar] = strawberry.django.field(filters=CategoryFilter)
-    
+
+    category: List[CategoryScalar] = strawberry.django.field(
+        filters=CategoryFilter)
+
     # will need to update this, since already change to strawberry auth
     # for admin used to track how many users in the system and etc.
     users: List[UserScalar] = strawberry.django.field()
@@ -29,33 +49,40 @@ class Query(UserQueries):
 
     # Get bill by user id? How to do this?
     bill: List[BillScalar] = strawberry.django.field(filters=BillFilter)
-    
-    individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(filters=IndividualSpendingFilter)
-    
+
+    individualSpending: List[IndividualSpendingScalar] = strawberry.django.field(
+        filters=IndividualSpendingFilter)
+
+
 @strawberry.type
 class Mutation:
     # User Login
     login: UserAuth = auth.login()
-    logout = auth.logout()
+    # logout = auth.logout()
     registerUser: UserAuth = auth.register(UserLoginInput)
-    
+
     # create
     createCategory: CategoryScalar = mutations.create(CategoryInput)
-    createBill: BillScalar = mutations.create(BillInput)
-    createIndividualSpending: IndividualSpendingScalar = mutations.create(IndividualSpendingInput)
-    
+    createBill: BillScalar = mutations.create(BillInput, permission_classes=[QuekPerm])
+    createIndividualSpending: IndividualSpendingScalar = mutations.create(
+        IndividualSpendingInput)
+
     # update
-    updateCategory: List[CategoryScalar] = mutations.update(CategoryPartialInput, filters=CategoryFilter)
-    updateBill: List[BillScalar] = mutations.update(BillPartialInput, filters=BillFilter)
-    updateIndividualSpending: List[IndividualSpendingScalar] = mutations.update(IndividualSpendingPartialInput, filters=IndividualSpendingFilter)
-    
+    updateCategory: List[CategoryScalar] = mutations.update(
+        CategoryPartialInput, filters=CategoryFilter)
+    updateBill: List[BillScalar] = mutations.update(
+        BillPartialInput, filters=BillFilter)
+    updateIndividualSpending: List[IndividualSpendingScalar] = mutations.update(
+        IndividualSpendingPartialInput, filters=IndividualSpendingFilter)
+
     # delete
     # TODO:this is dangerous, they can feed in deletion all without filter
-    deleteCategory: List[CategoryScalar] = mutations.delete(filters=CategoryFilter)
+    deleteCategory: List[CategoryScalar] = mutations.delete(
+        filters=CategoryFilter, permission_classes=[])
     deleteBill: List[BillScalar] = mutations.delete(filters=BillFilter)
-    deleteIndividualSpending: List[IndividualSpendingScalar] = mutations.delete(filters=IndividualSpendingFilter)
-    
-    
+    deleteIndividualSpending: List[IndividualSpendingScalar] = mutations.delete(
+        filters=IndividualSpendingFilter)
+
     # User Authentication Mutations
     register = mutationsAuth.Register.field
     verify_token = mutationsAuth.VerifyToken.field
@@ -72,6 +99,6 @@ class Mutation:
     password_set = mutationsAuth.PasswordSet.field
     refresh_token = mutationsAuth.RefreshToken.field
     revoke_token = mutationsAuth.RevokeToken.field
-    
-        
+
+
 schema = strawberry.Schema(query=Query, mutation=Mutation)
