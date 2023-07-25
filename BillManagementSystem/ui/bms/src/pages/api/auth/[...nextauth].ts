@@ -3,11 +3,8 @@ import CredentialsProvider  from "next-auth/providers/credentials";
 import client from "../../../apollo-client";
 import { gql } from "@apollo/client";
 import { getLogger } from "../../../logging/log-util";
-
-type loginCredentials = {
-  username: string;
-  password: string;
-};
+import jwt from "jsonwebtoken";
+import chalk from "chalk";
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -16,6 +13,7 @@ export const authOptions: NextAuthOptions = {
   // https://next-auth.js.org/configuration/providers/oauth
   providers: [
     CredentialsProvider({
+      // How to delete this? I have my own signin page.
       name: "Credentials (Deprecated)",
       credentials: {
         username: { label: "Username", type: "text", placeholder: "jsmith" },
@@ -65,8 +63,9 @@ export const authOptions: NextAuthOptions = {
             const user = {
               "serverRefreshToken": data.tokenAuth.refreshToken.token,
               "isActive": data.tokenAuth.user.isActive,
-              "username": data.tokenAuth.user.username,
-              "email": data.tokenAuth.user.email
+              "name": data.tokenAuth.user.username,
+              "email": data.tokenAuth.user.email,
+              "accessToken": data.tokenAuth.token.token,
             }
             return user;
           } else {
@@ -81,13 +80,54 @@ export const authOptions: NextAuthOptions = {
       }
     })
   ],
-  // callbacks: {
-  //   async jwt({ token }) {
-  //     console.log("jwt callback");
-  //     console.log(token.email);
-  //     return token
-  //   },
-  // },
+  callbacks: {
+    async jwt({ account, token, user, profile }) {
+      const data = {...token};
+
+      if (user && user.accessToken) {
+        console.log(user.accessToken);
+        data.email = user.email;
+        data.name = user.name;
+        data.accessToken = user.accessToken;
+
+        return data;
+      }
+
+      const payload = jwt.decode(data.accessToken, { json: true });
+      if (!payload) {
+        console.error(chalk.red('AccessToken after 2nd call is invalid:', data));
+        throw new Error('Unable to decode');
+      }
+      // const { exp, id } = payload;
+
+      // if (exp && id) {
+      //   const timeEpoch = exp * 1000; // seconds to milliseconds
+      //   if (dayjs(timeEpoch).isBefore(new Date())) {
+      //     // refresh
+      //     console.log(chalk.yellow('should refresh token'));
+      //     const {
+      //       data: { accessToken },
+      //     } = await refreshAccessToken( . . . );
+      //     data.accessToken = accessToken; // currently not work...
+      //   }
+      // }
+
+      return data;
+    },
+    async session({ session, user, token, newSession, trigger }) {
+      const alteredSession = { ...session };
+      if (alteredSession.user != undefined) {
+        alteredSession.user.name = token.name;
+        alteredSession.user.email = token.email;
+      }
+      
+      // This will be returned to the client so be careful what to send here.
+      return {
+        ...alteredSession,
+        accessToken: token.accessToken,
+      };
+    },
+  },
 }
 
 export default NextAuth(authOptions)

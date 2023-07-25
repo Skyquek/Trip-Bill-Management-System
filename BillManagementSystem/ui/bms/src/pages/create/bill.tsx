@@ -1,3 +1,4 @@
+import { useSession, getSession } from "next-auth/react";
 import Sidebar from "../sidebar";
 import Appbar from "../appbar";
 import AddBill from "../../components/Forms/add_bill";
@@ -40,22 +41,34 @@ export default function bill() {
         token: { colorBgContainer },
     } = theme.useToken();
 
-    return (
-        <div style={{ height: '100vh', margin: 0, padding:0, overflow: 'hidden' }}>
-            <Layout style={{height: '100%' }}>
-                <Header style={headerStyle}>
-                    <Appbar></Appbar>
-                </Header>
-                <Layout hasSider style={{ margin:0, padding: 0 }}>
-                    <Sider style={siderStyle}>
-                        <Sidebar></Sidebar>
-                    </Sider>
-                    <Content style={contentStyle}>
-                        <AddBill></AddBill>
-                    </Content>
+    const {data: session, status} = useSession();
+
+    if (status == "loading") {
+        return (<div className="div"><p>Loading...</p></div>);
+    } else if (status == "unauthenticated") {
+        window.location.href = '/login';
+    }
+     else {
+        // authenticated
+        console.log(session);
+
+        return (
+            <div style={{ height: '100vh', margin: 0, padding:0, overflow: 'hidden' }}>
+                <Layout style={{height: '100%' }}>
+                    <Header style={headerStyle}>
+                        <Appbar></Appbar>
+                    </Header>
+                    <Layout hasSider style={{ margin:0, padding: 0 }}>
+                        <Sider style={siderStyle}>
+                            <Sidebar></Sidebar>
+                        </Sider>
+                        <Content style={contentStyle}>
+                            <AddBill></AddBill>
+                        </Content>
+                    </Layout>
+                    <Footer style={footerStyle}>Footer</Footer>
                 </Layout>
-                <Footer style={footerStyle}>Footer</Footer>
-            </Layout>
-        </div>
-    );
+            </div>
+        );
+    }
 }
