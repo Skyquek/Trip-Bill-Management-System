@@ -5,12 +5,8 @@ import AddBill from "../../components/Forms/add_bill";
 import { Breadcrumb, Layout, Menu, theme, Space } from "antd";
 import React from "react";
 import { setContext } from '@apollo/client/link/context';
-import client from "../../apollo-client";
+import client, { httpLink } from "../../apollo-client";
 import { ApolloClient, InMemoryCache, gql, createHttpLink } from '@apollo/client';
-
-const httpLink = createHttpLink({
-    uri: 'http://127.0.0.1:8000/graphql/',
-});
 
 export const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
