@@ -7,6 +7,7 @@ from .. import models
 from django.contrib.auth.models import User as DjangoUser
 import decimal
 
+from django.contrib.auth import get_user_model
 
 @strawberry.django.type(models.IndividualSpending)
 class IndividualSpendingScalar:
@@ -38,6 +39,11 @@ class CategoryScalar:
     name: str
     bills: List[BillScalar]
 
+@strawberry.django.type(get_user_model())
+class UserAuth:
+    id: ID
+    username: auto
+    email: auto
 
 @strawberry.django.type(DjangoUser)
 class DjangoUser:
