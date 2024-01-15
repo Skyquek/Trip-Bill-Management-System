@@ -103,3 +103,7 @@ erDiagram
     user ||--o{ debt : "can be owed"
 
 ```
+
+## References
+
+1. <https://medium.com/@russell.cecala/full-stack-with-flutter-and-django-rest-framework-16fd666d39b> Get started with django rest framework.
