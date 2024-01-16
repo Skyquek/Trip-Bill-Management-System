@@ -18,10 +18,9 @@ The BMS system resolved the issue by displaying to each user the amount owed to 
 
 ```mermaid
 erDiagram
-    user ||--o{ friendship : "is"
-    user ||--o{ group: "involved"
-    user ||--o{ expense_split : "is involved in"
-    user ||--|| django_user: "also is"
+    django_user ||--o{ friendship : "is"
+    django_user ||--o{ group: "involved"
+    django_user ||--|| profile: "also is"
 
     django_user {
        string id PK "django default"
@@ -56,8 +55,8 @@ erDiagram
         decimal amount "Positive: owes, Negative: is owed"
     }
 
-    user ||--o{ debt : "can owe"
-    user ||--o{ debt : "can be owed"
+    django_user ||--o{ debt : "can owe"
+    django_user ||--o{ debt : "can be owed"
     
     group {
         string id PK "uuid"
@@ -65,7 +64,6 @@ erDiagram
         string group_picture "group photo (optional)"
         enum group_type "trip, home, couple, other"
     }
-    expense ||--|{ expense_split : "is involved in"
     expense ||--|| group: "is spending in"
     expense {
         string id PK "uuid"
@@ -78,30 +76,16 @@ erDiagram
         string receipt_image "image of receipt (optional)"
         string note "some note to indicate or record somethings (optional)"
     }
-    split_method ||--|{ expense_split : "specifies"
-    split_method {
-        string id PK "uuid"
-        string name "how to split (equally, unequally)"
-        string description "the description of each splitting technique"
-    }
-    
-    expense_split {
-        string id PK "uuid"
-        string expense_id  FK
-        string user_id FK
-        string split_method_id FK
-    }
 
-    user ||--o{ comment : "can post"
+    django_user ||--o{ comment : "can post"
     group ||--o{ comment : "can contain"
 
     comment {
         string id PK "uuid"
         string user_id FK "which user"
-        string group_id FK "what is this suer comment"
+        string expense_id "what expense is this?"
+        string text "what is this user comment"
     }
-
-    
 ```
 
 ## DJango App
