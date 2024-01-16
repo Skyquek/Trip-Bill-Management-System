@@ -14,16 +14,6 @@ When they settled the bills, Ali didn't owe anything. Ah Chong owed Mei Mei RM 1
 
 The BMS system resolved the issue by displaying to each user the amount owed to or by other participants for the entirety of the trip.
 
-## Home Bill Management System
-
-```mermaid
-flowchart LR
-    id1[[Login]] --> id2[[Add Payment]]
-    --> id3[/Input bills/] --> id4[/Add Note/]
-    --> id5[/Input payer name/] --> id6[/Input individual cost/]
-    --> id7[[Click View Debt]] --> id8[/Display Debt Summary/]
-```
-
 ### ERD
 
 ```mermaid
@@ -31,23 +21,43 @@ erDiagram
     user ||--o{ friendship : "is"
     user ||--o{ group: "involved"
     user ||--o{ expense_split : "is involved in"
+    user ||--|| django_user: "also is"
 
-    user {
+    django_user {
+       string id PK "django default"
+       string username "django default"
+       string first_name "django default"
+       string last_name "django default"
+       string email "django default"
+       string is_staff "django default"
+       string is_active "django default" 
+       datetime date_joined "django default"
+    }
+
+    profile {
         string id PK "UUID"
-        string username "username"
-        string password "password"
-        string name
-        string email
+        string django_user_id FK "django_user_id"
         string phone_number
         string currency "All MYR, only support MYR for now"
         string language "For emails and notifications"
         string profile_picture "path to system storage"
     }
+    
     friendship {
         string id PK "uuid"
         int user1_id "user 1 id"
         int user2_id "user 2 id"
     }
+
+    debt {
+        string id PK "uuid"
+        string debtor_user_id FK "who is the borrower? the lazy to pay one."
+        string creditor_user_id FK "who paid for the expense? The good guy."
+        decimal amount "Positive: owes, Negative: is owed"
+    }
+
+    user ||--o{ debt : "can owe"
+    user ||--o{ debt : "can be owed"
     
     group {
         string id PK "uuid"
@@ -92,17 +102,33 @@ erDiagram
         string group_id FK "what is this suer comment"
     }
 
-    debt {
-        string id PK "uuid"
-        string debtor_user_id FK "who is the borrower? the lazy to pay one."
-        string creditor_user_id FK "who paid for the expense? The good guy."
-        decimal amount "Positive: owes, Negative: is owed"
-    }
-
-    user ||--o{ debt : "can owe"
-    user ||--o{ debt : "can be owed"
-
+    
 ```
+
+## DJango App
+
+1. User App:
+    - Models:
+        - User: Extends the default Django User model.
+    - Relations:
+        - Friendship: Represents a friendship relationship between users.
+        - ExpenseSplit: Represents a user's involvement in splitting an expense.
+        - Comment: Represents user comments.
+        - Debt: Represents debts owed between users.
+
+2. Group App:
+    - Models: Group
+    - Relations: User (through friendship), Expense, Comment
+
+3. Expense App:
+    - Models: Expense, SplitMethod, ExpenseSplit
+    - Relations: User (through ExpenseSplit), Group (through Expense)
+
+4. Comment App:
+    - Models: Comment
+
+5. Debt App:
+    - Models: Debt
 
 ## References
 
