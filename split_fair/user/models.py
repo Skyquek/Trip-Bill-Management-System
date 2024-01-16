@@ -15,11 +15,4 @@ class Friendship(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_user_1')
     user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friendship_user_2')
     
-class Debt(models.Model):
-    debt_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    debtor_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debts_as_debtor')
-    creditor_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='debts_as_creditor')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    
-    
 
