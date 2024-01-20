@@ -103,4 +103,20 @@ erDiagram
 
 ## References
 
-1. <https://medium.com/@russell.cecala/full-stack-with-flutter-and-django-rest-framework-16fd666d39b> Get started with django rest framework.
+1. Get started with django rest framework. <https://medium.com/@russell.cecala/full-stack-with-flutter-and-django-rest-framework-16fd666d39b>
+2. Social Media Authentication <https://python.plainenglish.io/social-media-rest-authentication-so-easy-that-you-will-laugh-django-7bca6869f931>
+
+## Task List
+
+1. Set up the user Authentication
+    - Register
+    - Login
+    - Logout
+2. User can create group
+    - Group Creation
+    - User can join group
+    - User can leave group
+3. User can create expense
+    - Expense Creation
+    - User can split expense
+    - User can comment on expense
