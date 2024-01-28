@@ -2,15 +2,15 @@
 
 A new Flutter project.
 
-## Getting Started
+## Flutter Bloc
 
-This project is a starting point for a Flutter application.
+- Presentation: The presentation layer's responsibility is to figure out how to render itself based on one or more bloc states. In addition, it should handle user input and application lifecycle events.
+- Business Logic: BLOC, State, and Events
+- Data
+  - Repository: The repository layer is a wrapper around one or more data providers with which the Bloc Layer communicates.
+  - Data Provider: The data provider's responsibility is to provide raw data. The data provider should be generic and versatile. Data Provider/Service/API Client: This component is responsible for making requests to external data sources. It may involve network requests, database queries, or any other method of fetching or storing data.
 
-A few resources to get you started if this is your first Flutter project:
+## Note
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- A bloc should only receive information through events and from injected repositories (i.e., repositories given to the bloc in its constructor)
+- A bloc shouldn't call other bloc
