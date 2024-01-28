@@ -8,6 +8,7 @@ django = "*"
 djangorestframework = "*"
 pillow = "*"
 dj-rest-auth = {extras = ["with_social"], version = "*"}
+django-cors-headers = "*"
 
 [dev-packages]
 
