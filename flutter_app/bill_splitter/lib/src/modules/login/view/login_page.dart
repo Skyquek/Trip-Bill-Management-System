@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bill_splitter/src/modules/login/bloc/login_bloc.dart';
 import 'package:bill_splitter/src/modules/login/view/login_form.dart';
+import 'package:django_backend_api/django_backend_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +20,7 @@ class LoginPage extends StatelessWidget {
         child: BlocProvider(
           create: (context) {
             return LoginBloc(
+              authMechanism: DjangoUserAuthApi(),
               authenticationRepository:
                   RepositoryProvider.of<AuthenticationRepository>(context),
             );

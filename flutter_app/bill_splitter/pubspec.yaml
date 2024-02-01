@@ -44,6 +44,10 @@ dependencies:
     path: packages/authentication_repository
   user_repository:
     path: packages/user_repository
+  authentication_api:
+    path: packages/authentication_api
+  django_backend_api:
+    path: packages/django_backend_api
   formz: ^0.6.1
 
 dev_dependencies:

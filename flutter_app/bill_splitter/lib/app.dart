@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:django_backend_api/django_backend_api.dart';
 import 'package:bill_splitter/split_fair.dart';
 import 'package:bill_splitter/src/modules/auth/bloc/authentication_bloc.dart';
 import 'package:bill_splitter/src/modules/home/home.dart';

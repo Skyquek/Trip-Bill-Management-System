@@ -4,3 +4,10 @@ publish_to: none
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  authentication_api:
+    path: ../authentication_api
+
+  django_backend_api:
+    path: ../django_backend_api

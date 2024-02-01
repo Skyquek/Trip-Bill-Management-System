@@ -1,6 +1,7 @@
 // Manages the state of the LoginForm and takes care validating the username
 // and password input as well as the state of the form
 
+import 'package:authentication_api/authentication_api.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bill_splitter/src/modules/login/model/models.dart';
 import 'package:equatable/equatable.dart';
@@ -12,10 +13,13 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthenticationRepository _authenticationRepository;
+  final AuthenticationApi _authMechanism;
 
   LoginBloc({
     required AuthenticationRepository authenticationRepository,
+    required AuthenticationApi authMechanism,
   })  : _authenticationRepository = authenticationRepository,
+        _authMechanism = authMechanism,
         super(const LoginState()) {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
@@ -56,8 +60,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         await _authenticationRepository.logIn(
-          username: state.username.value,
-          password: state.password.value,
+          _authMechanism,
+          state.username.value,
+          state.password.value,
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (_) {
